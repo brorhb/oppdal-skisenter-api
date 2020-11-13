@@ -84,7 +84,7 @@ CREATE TABLE `lifts` (
   `elevation` int DEFAULT NULL,
   `length` int DEFAULT NULL,
   `type` int NOT NULL,
-  `map_name` tinytext,
+  `map_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `status` (`status`),
