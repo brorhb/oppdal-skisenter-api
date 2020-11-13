@@ -10,8 +10,7 @@ fastify.register(require('./routes/v1'), { prefix: '/v1' })
 // Run the server!
 const start = async () => {
   try {
-    await fastify.listen(process.env.PORT || 3000)
-    fastify.log.info(`server listening on ${fastify.server.address().port}`)
+    await fastify.listen(process.env.PORT || 3000, '0.0.0.0')
     connection.connect((err) => {
         if (err) throw err
         console.log("Connected to database")
