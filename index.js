@@ -12,7 +12,7 @@ const start = async () => {
   try {
     await fastify.listen(process.env.PORT || 3000, '0.0.0.0')
     connection.connect((err) => {
-        if (err) console.log(`Could not connect to Database ${err}`)
+        if (err) connection.handleDisconnect()
         console.log("Connected to database")
     })
   } catch (err) {
