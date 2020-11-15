@@ -1,10 +1,9 @@
 require('dotenv').config()
 const fastify = require('fastify')({ logger: true })
-const v1 = require("./routes/v1")
-const connection = require("./connection")
+require("./connection")
 
 
-
+fastify.register(require('fastify-cors'))
 fastify.register(require('./routes/v1'), { prefix: '/v1' })
 
 // Run the server!
