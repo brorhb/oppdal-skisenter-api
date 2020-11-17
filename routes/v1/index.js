@@ -76,5 +76,16 @@ module.exports = function (fastify, opts, done) {
       }
     })
   })
+
+  fastify.get("/update-table", async () => {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, 300)
+    })
+    return {
+      "message": "sucessfully emulated table update"
+    }
+  })
   done()
 }
