@@ -87,5 +87,17 @@ module.exports = function (fastify, opts, done) {
       "message": "sucessfully emulated table update"
     }
   })
+
+  fastify.get("/avalanche-warnings", async () => {
+    let warnings = await getDataFromTable("avalanche_log")
+    let levels = await getDataFromTable("avalanche_levels")
+    return warnings.map((item) => {
+      return {
+        ...item,
+        level: levels.find((level) => level.id === item.level)
+      }
+    })
+  })
+
   done()
 }

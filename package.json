@@ -17,6 +17,7 @@
     "dotenv": "^8.2.0",
     "fastify": "^3.7.0",
     "fastify-cors": "^4.1.0",
+    "fastify-express": "^0.3.2",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6"
