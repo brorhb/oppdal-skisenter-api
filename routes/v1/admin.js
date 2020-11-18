@@ -1,6 +1,6 @@
 const connection = require("../../connection")
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 const getDataFromTable = (tableName) => {
   return new Promise((resolve, reject) => {
