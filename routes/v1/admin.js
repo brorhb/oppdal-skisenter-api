@@ -47,7 +47,7 @@ module.exports = function (fastify, opts, done) {
     const users = await getDataFromTable("users")
     const user = users.find((item) => item.username === username && compareHash(password, item.password))
     let refreshToken = jwt.sign({
-      exp: Math.floor(Date.now() / 1000) + 604800,
+      exp: Math.floor(Date.now() / 1000) + parseInt(process.env.REFRESH_TOKEN_LIFE),
       data: JSON.stringify(user)
     }, process.env.REFRESH_TOKEN_SECRET)
     return {
@@ -65,7 +65,11 @@ module.exports = function (fastify, opts, done) {
 
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1]
-  console.log(token)
-  console.log('verify token', jwt.verify(token, process.env.REFRESH_TOKEN_SECRET))
-  next()
+  try {
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+    next()
+  } catch(err) {
+    res.code(403)
+    res.send({"error": err})
+  }
 }
