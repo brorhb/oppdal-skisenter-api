@@ -48,10 +48,17 @@ module.exports = function (fastify, opts, done) {
     const user = users.find((item) => item.username === username && compareHash(password, item.password))
     let refreshToken = jwt.sign({
       exp: Math.floor(Date.now() / 1000) + parseInt(process.env.REFRESH_TOKEN_LIFE),
-      data: JSON.stringify(user)
+      data: JSON.stringify({
+        "id": user.id,
+        "username": user.username,
+        "role": user.role
+      })
     }, process.env.REFRESH_TOKEN_SECRET)
     return {
-      "user": user,
+      "user": {
+        "username": user.username,
+        "role": user.role
+      },
       "token": refreshToken
     }
   })
@@ -66,8 +73,13 @@ module.exports = function (fastify, opts, done) {
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1]
   try {
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
-    next()
+    let decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+    decoded = JSON.parse(decoded.data)
+    if (decoded.role === 1) {
+      next()
+    } else {
+      throw "User dont have access to this route"
+    }
   } catch(err) {
     res.code(403)
     res.send({"error": err})
