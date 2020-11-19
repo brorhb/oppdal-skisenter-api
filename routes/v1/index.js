@@ -17,6 +17,7 @@ module.exports = function (fastify, opts, done) {
     let lifts = await getDataFromTable("lifts")
     let difficulty_types = await getDataFromTable("difficulty")
     let status_types = await getDataFromTable("status_types")
+    let track_coords_in_map = await getDataFromTable("track_coord_in_map")
     tracks = tracks.map((track) => ({
       ...track,
       difficulty: difficulty_types.find((item) => item.id === track.difficulty).label,
@@ -26,7 +27,8 @@ module.exports = function (fastify, opts, done) {
         : null,
       connected_tracks: track.connected_tracks
         ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
-        : null
+        : null,
+      coords: track_coords_in_map.find((item) => item.track === track.id).coord
     }))
     return tracks
   })
