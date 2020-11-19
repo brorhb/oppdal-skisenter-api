@@ -18,18 +18,26 @@ module.exports = function (fastify, opts, done) {
     let difficulty_types = await getDataFromTable("difficulty")
     let status_types = await getDataFromTable("status_types")
     let track_coords_in_map = await getDataFromTable("track_coord_in_map")
-    tracks = tracks.map((track) => ({
-      ...track,
-      difficulty: difficulty_types.find((item) => item.id === track.difficulty).label,
-      status: status_types.find((status) => status.id === track.status).name,
-      lifts: track.lifts
-        ? JSON.parse(track.lifts).map((id) => lifts.find((lift) => lift.id === id))
-        : null,
-      connected_tracks: track.connected_tracks
-        ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
-        : null,
-      coords: track_coords_in_map.find((item) => item.track === track.id)?.coord ?? ""
-    }))
+    tracks = tracks.map((track) => {
+      const coord = track_coords_in_map.find((item) => item.track === track.id)?.coord
+      const x = coord?.split(",")[0].trim()
+      const y = coord?.split(",")[1].trim()
+      return {
+        ...track,
+        difficulty: difficulty_types.find((item) => item.id === track.difficulty).label,
+        status: status_types.find((status) => status.id === track.status).name,
+        lifts: track.lifts
+          ? JSON.parse(track.lifts).map((id) => lifts.find((lift) => lift.id === id))
+          : null,
+        connected_tracks: track.connected_tracks
+          ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
+          : null,
+        coords: coord ? {
+          "x": x,
+          "y": y
+        } : null
+      }
+    })
     return tracks
   })
   
