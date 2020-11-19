@@ -28,7 +28,7 @@ module.exports = function (fastify, opts, done) {
       connected_tracks: track.connected_tracks
         ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
         : null,
-      coords: track_coords_in_map.find((item) => item.track === track.id).coord
+      coords: track_coords_in_map.find((item) => item.track === track.id)?.coord ?? ""
     }))
     return tracks
   })
