@@ -1,4 +1,7 @@
 const connection = require("../../connection")
+const fetch = require('node-fetch');
+
+var weatherCache
 
 module.exports = function (fastify, opts, done) {
   const getDataFromTable = (tableName) => {
@@ -85,6 +88,29 @@ module.exports = function (fastify, opts, done) {
         type: facility_types.find((item) => item.id === facility.type)
       }
     })
+  })
+
+  fastify.get("/weather-report", async () => {
+    if (weatherCache && (Date.now() - weatherCache.dateTime) < 300000) {
+      return weatherCache.result
+    } else {
+      const urls = [
+        `http://api.holfuy.com/live/?s=1346&pw=${process.env.HOLFUY_API_KEY}&m=JSON&tu=C&su=m/s`,
+        `http://api.holfuy.com/live/?s=796&pw=${process.env.HOLFUY_API_KEY}&m=JSON&tu=C&su=m/s`
+      ]
+      const result = await Promise.all([
+        ...urls.map(
+          (url) => new Promise((resolve, reject) => {
+            fetch(url).then(data => resolve(data.json())).catch(err => reject(err))
+          })
+        )
+      ])
+      weatherCache = {
+        "dateTime": Date.now(),
+        "result": result
+      }
+      return result
+    }
   })
 
   fastify.get("/update-table", async () => {
