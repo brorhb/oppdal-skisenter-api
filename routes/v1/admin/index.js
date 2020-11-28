@@ -25,6 +25,10 @@ module.exports = function (fastify, opts, done) {
   
   fastify.register(require('./tracks'), { prefix: '/track' })
   fastify.register(require('./lifts'), { prefix: '/lift' })
+  fastify.register(require('./facilities'), { prefix: '/facility' })
+  fastify.register(require('./zones'), { prefix: '/zone' })
+  fastify.register(require('./features'), { prefix: '/feature' })
+  fastify.register(require('./avalanches'), { prefix: '/avalanche' })
   /*fastify.post("/create", async (req, res) => {
     const hash = await new Promise((resolve, reject) => {
       bcrypt.hash(req.body.password, 10, function(err, hash) {

@@ -10,35 +10,20 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       try {
         const pathParams = req.url.split("/")
-        const liftId = pathParams[pathParams.length - 1]
-        const lift = req.body
+        const featureId = pathParams[pathParams.length - 1]
+        const feature = req.body
         await new Promise((resolve, reject) => {
           connection.query(`
           UPDATE
-            lifts
+            features
           SET
-            name = '${lift.name}',
-            status = '${lift.status}',
-            start_position = ${lift.start_position ?? null},
-            end_position = ${lift.end_position ?? null},
-            elevation = '${lift.elevation}',
-            length = '${lift["length"]}',
-            type = '${lift.type}',
-            map_name = '${lift.map_name}',
-            zone = '${lift.zone}'
-          WHERE id = '${liftId}';
-          `, (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
-        })
-        await new Promise((resolve, reject) => {
-          connection.query(`
-          REPLACE INTO
-            lift_coord_in_map
-          SET
-            coord = '${lift.coords}'
-          WHERE track = '${liftId}';
+            name = '${feature.name}',
+            position = ${feature.position ?? null},
+            track = '${feature.track}',
+            type = '${feature.type}',
+            difficulty = '${feature.difficulty}',
+            status = '${feature.status}'
+          WHERE id = '${featureId}';
           `, (error, result) => {
             if (error) reject(error)
             resolve(result)
@@ -62,23 +47,32 @@ module.exports = function (fastify, opts, done) {
     url: "/add",
     handler: async (req, res) => {
       try {
-        const lifts = await getDataFromTable("lifts")
-        const lift = req.body
+        let features = await getDataFromTable("features")
+        if (!features) features = []
+        const feature = req.body
         await new Promise((resolve, reject) => {
+          /*
+            INSERT INTO features (id, name, position, track, type, difficulty, status)
+            VALUES (
+              '${features[features.length-1].id + 1}',
+              '${feature.name}',
+              '${feature.position ?? null}',
+              '${feature.track}',
+              '${feature.type}',
+              '${feature.difficulty}',
+              '${feature.status}'
+              );
+          */
           connection.query(`
-          INSERT INTO
-            lifts (id, name, status, start_position, end_position, elevation, length, type, map_name, zone)
+          INSERT INTO features (id, name, position, track, type, difficulty, status)
           VALUES (
-            '${lifts[lifts.length-1].id + 1}',
-            '${lift.name}',
-            '${lift.status}',
-            ${lift.start_position ?? null},
-            ${lift.end_position ?? null},
-            '${lift.elevation}',
-            '${lift["length"]}',
-            '${lift.type}',
-            '${lift.map_name}',
-            '${lift.zone}'
+            '${features.length > 0 ? features[features.length-1].id + 1 : 1}',
+            '${feature.name}',
+            ${feature.position ?? null},
+            '${feature.track}',
+            '${feature.type}',
+            '${feature.difficulty}',
+            '${feature.status}'
           );
           `, (error, result) => {
             if (error) reject(error)
@@ -89,7 +83,6 @@ module.exports = function (fastify, opts, done) {
           "success": true,
         }
       } catch(err) {
-        res.code = 500
         return {
           "success": false,
           "message": err
@@ -105,9 +98,9 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       try {
         const pathParams = req.url.split("/")
-        const liftId = pathParams[pathParams.length - 1]
+        const featureId = pathParams[pathParams.length - 1]
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM lifts WHERE id = ${liftId}`, (err, res) => {
+          connection.query(`DELETE FROM features WHERE id = ${featureId}`, (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

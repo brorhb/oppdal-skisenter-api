@@ -10,35 +10,18 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       try {
         const pathParams = req.url.split("/")
-        const liftId = pathParams[pathParams.length - 1]
-        const lift = req.body
+        const facilityId = pathParams[pathParams.length - 1]
+        const facility = req.body
         await new Promise((resolve, reject) => {
           connection.query(`
           UPDATE
-            lifts
+            facilities
           SET
-            name = '${lift.name}',
-            status = '${lift.status}',
-            start_position = ${lift.start_position ?? null},
-            end_position = ${lift.end_position ?? null},
-            elevation = '${lift.elevation}',
-            length = '${lift["length"]}',
-            type = '${lift.type}',
-            map_name = '${lift.map_name}',
-            zone = '${lift.zone}'
-          WHERE id = '${liftId}';
-          `, (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
-        })
-        await new Promise((resolve, reject) => {
-          connection.query(`
-          REPLACE INTO
-            lift_coord_in_map
-          SET
-            coord = '${lift.coords}'
-          WHERE track = '${liftId}';
+            name = '${facility.name}',
+            type = '${facility.type}',
+            status = '${facility.status}',
+            zone = '${facility.zone}'
+          WHERE id = '${facilityId}';
           `, (error, result) => {
             if (error) reject(error)
             resolve(result)
@@ -62,23 +45,18 @@ module.exports = function (fastify, opts, done) {
     url: "/add",
     handler: async (req, res) => {
       try {
-        const lifts = await getDataFromTable("lifts")
-        const lift = req.body
+        const facilities = await getDataFromTable("facilities")
+        const facility = req.body
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
-            lifts (id, name, status, start_position, end_position, elevation, length, type, map_name, zone)
+            facilities (id, name, type, status, zone)
           VALUES (
-            '${lifts[lifts.length-1].id + 1}',
-            '${lift.name}',
-            '${lift.status}',
-            ${lift.start_position ?? null},
-            ${lift.end_position ?? null},
-            '${lift.elevation}',
-            '${lift["length"]}',
-            '${lift.type}',
-            '${lift.map_name}',
-            '${lift.zone}'
+            '${facilities[facilities.length-1].id + 1}',
+            '${facility.name}',
+            '${facility.type}',
+            ${facility.status},
+            ${facility.zone}
           );
           `, (error, result) => {
             if (error) reject(error)
@@ -105,9 +83,9 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       try {
         const pathParams = req.url.split("/")
-        const liftId = pathParams[pathParams.length - 1]
+        const facilityId = pathParams[pathParams.length - 1]
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM lifts WHERE id = ${liftId}`, (err, res) => {
+          connection.query(`DELETE FROM facilities WHERE id = ${facilityId}`, (err, res) => {
             if (err) reject(err)
             resolve(res)
           })
