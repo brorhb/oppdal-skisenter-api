@@ -1,0 +1,129 @@
+const getDataFromTable = require('../../../helpers/getDatabaseTable')
+const authMiddleware = require('../../../helpers/authMiddleware')
+const connection = require("../../../connection")
+
+module.exports = function (fastify, opts, done) {
+  fastify.route({
+    method: "PATCH",
+    url: "/:id",
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      const pathParams = req.url.split("/")
+      const trackId = pathParams[pathParams.length - 1]
+      const track = req.body
+      try {
+        await new Promise((resolve, reject) => {
+          connection.query(`
+          UPDATE
+            tracks
+          SET
+            name = '${track.name}',
+            connected_tracks = '${JSON.stringify(track.connected_tracks)}',
+            season = '${track.season}',
+            status = '${track.status}',
+            length = '${track["length"]}',
+            difficulty = '${track.difficulty}',
+            lifts = '${JSON.stringify(track.lifts)}',
+            zone = '${track.zone}'
+          WHERE id = '${trackId}';
+          `, (error, result) => {
+            if (error) reject(error)
+            resolve(result)
+          })
+        })
+        await new Promise((resolve, reject) => {
+          connection.query(`
+          REPLACE INTO
+            track_coord_in_map
+          SET
+            coord = '${track.coords}'
+          WHERE track = '${trackId}';
+          `, (error, result) => {
+            if (error) reject(error)
+            resolve(result)
+          })
+        })
+      } catch(err) {
+        return {
+          "success": false,
+          "message": err
+        }
+      }
+      return {
+        "success": true
+      }
+    }
+  })
+
+  fastify.route({
+    method: "POST",
+    preValidation: authMiddleware,
+    url: "/add",
+    handler: async (req, res) => {
+      const tracks = await getDataFromTable("tracks")
+      const track = req.body
+      try {
+        await new Promise((resolve, reject) => {
+          connection.query(`
+          INSERT INTO
+            tracks (id, name, connected_tracks, season, status, length, difficulty, lifts, zone)
+          VALUES (
+            '${tracks[tracks.length-1].id + 1}',
+            '${track.name}',
+            '${JSON.stringify(track.connected_tracks)}',
+            '${track.season}',
+            '${track.status}',
+            '${track["length"]}',
+            '${track.difficulty}',
+            '${JSON.stringify(track.lifts)}',
+            '${track.zone}'
+          );
+          `, (error, result) => {
+            if (error) reject(error)
+            resolve(result)
+          })
+        })
+      } catch(err) {
+        res.code = 500
+        return {
+          "success": false,
+          "message": err
+        }
+      }
+      return {
+        "success": true,
+      }
+    }
+  })
+
+  fastify.route({
+    method: "DELETE",
+    preValidation: authMiddleware,
+    url: "/:id",
+    handler: async (req, res) => {
+      try {
+        const pathParams = req.url.split("/")
+        const trackId = pathParams[pathParams.length - 1]
+        const result = await new Promise((resolve, reject) => {
+          connection.query(`DELETE FROM tracks WHERE id = ${trackId}`, (err, res) => {
+            if (err) reject(err)
+            resolve(res)
+          })
+        })
+        return {
+          "success": true,
+          "message": result
+        }
+      }
+      catch(err) {
+        res.code = 500
+        return {
+          "success": false,
+          "message": err
+        }
+      }
+    }
+  })
+
+  done()
+}

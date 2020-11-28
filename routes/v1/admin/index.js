@@ -1,15 +1,8 @@
-const connection = require("../../connection")
+const connection = require("../../../connection")
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-
-const getDataFromTable = (tableName) => {
-  return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM ${tableName};`,(err, result) => {
-      if (err) reject(err)
-      resolve(result)
-    })
-  })
-}
+const getDataFromTable = require('../../../helpers/getDatabaseTable')
+const authMiddleware = require('../../../helpers/authMiddleware')
 
 const createHash = (password) => {
   return new Promise((resolve, reject) => {
@@ -30,7 +23,8 @@ const compareHash = (plainText, hash) => {
 
 module.exports = function (fastify, opts, done) {
   
-
+  fastify.register(require('./tracks'), { prefix: '/track' })
+  fastify.register(require('./lifts'), { prefix: '/lift' })
   /*fastify.post("/create", async (req, res) => {
     const hash = await new Promise((resolve, reject) => {
       bcrypt.hash(req.body.password, 10, function(err, hash) {
@@ -68,20 +62,4 @@ module.exports = function (fastify, opts, done) {
   })
 
   done()
-}
-
-function authMiddleware(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1]
-  try {
-    let decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
-    decoded = JSON.parse(decoded.data)
-    if (decoded.role === 1) {
-      next()
-    } else {
-      throw "User dont have access to this route"
-    }
-  } catch(err) {
-    res.code(403)
-    res.send({"error": err})
-  }
 }
