@@ -23,7 +23,7 @@ module.exports = function (fastify, opts, done) {
         difficulty: difficulty_types.find((item) => item.id === track.difficulty).label,
         status: status_types.find((status) => status.id === track.status).name,
         lifts: track.lifts
-          ? JSON.parse(track.lifts).map((id) => lifts.find((lift) => lift.map_name === id))
+          ? JSON.parse(track.lifts).map((id) => lifts.find((lift) => lift.id === id))
           : null,
         connected_tracks: track.connected_tracks
           ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
