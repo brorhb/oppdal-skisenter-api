@@ -41,11 +41,19 @@ module.exports = function (fastify, opts, done) {
     let lifts = await getDataFromTable("lifts")
     let status_types = await getDataFromTable("status_types")
     let lift_types = await getDataFromTable("lift_type")
+    let lift_coords_in_map = await getDataFromTable("lift_coord_in_map")
     lifts = lifts.map((lift) => {
+      const coord = lift_coords_in_map.find((item) => item.lift === lift.id)?.coord
+      const x = coord?.split(",")[0].trim()
+      const y = coord?.split(",")[1].trim()
       return {
         ...lift,
         status: status_types.find((status) => status.id === lift.status).name,
-        type: lift_types.find((type) => type.id === lift.type).type
+        type: lift_types.find((type) => type.id === lift.type).type,
+        coords: coord ? {
+          "x": x,
+          "y": y
+        } : null
       }
   
     })
