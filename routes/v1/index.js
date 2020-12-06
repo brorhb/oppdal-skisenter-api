@@ -135,6 +135,15 @@ module.exports = function (fastify, opts, done) {
       }
     })
   })
+  
+  fastify.get("/zones", async () => {
+    let zones = await getDataFromTable("zones")
+    return zones.map((item) => {
+      return {
+        ...item
+      }
+    })
+  })
 
   done()
 }
