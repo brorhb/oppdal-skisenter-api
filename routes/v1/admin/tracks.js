@@ -31,17 +31,30 @@ module.exports = function (fastify, opts, done) {
             resolve(result)
           })
         })
-        await new Promise((resolve, reject) => {
-          connection.query(`
-          REPLACE INTO
-            track_coord_in_map
-          SET
-            coord = '${track.coords}'
-          WHERE track = '${trackId}';
-          `, (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+        await new Promise(async (resolve, reject) => {
+          const coords = await getDataFromTable("track_coord_in_map")
+          if (coords.find((item) => item.track == trackId)) {
+            connection.query(`
+              UPDATE
+                track_coord_in_map
+              SET
+                coord = '${track.coords}'
+              WHERE track = '${trackId}';
+              `, (error, result) => {
+                if (error) reject(error)
+                resolve(result)
+              }
+            )
+          } else {
+            connection.query(`
+              INSERT INTO
+                track_coord_in_map (coord, track)
+              VALUES (
+                ${track.coords},
+                ${track.id}
+              )
+            `)
+          }
         })
       } catch(err) {
         return {

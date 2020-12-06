@@ -44,6 +44,33 @@ module.exports = function (fastify, opts, done) {
             resolve(result)
           })
         })
+        
+        await new Promise(async (resolve, reject) => {
+          const coords = await getDataFromTable("track_coord_in_map")
+          if (coords.find((item) => item.lift == liftId)) {
+            connection.query(`
+              UPDATE
+                lift_coord_in_map
+              SET
+                coord = '${lift.coords}'
+              WHERE track = '${liftId}';
+              `, (error, result) => {
+                if (error) reject(error)
+                resolve(result)
+              }
+            )
+          } else {
+            connection.query(`
+              INSERT INTO
+                track_coord_in_map (coord, lift)
+              VALUES (
+                ${lift.coords},
+                ${lift.id}
+              )
+            `)
+          }
+        })
+
         return {
           "success": true
         }
