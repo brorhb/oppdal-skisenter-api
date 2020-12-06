@@ -145,5 +145,14 @@ module.exports = function (fastify, opts, done) {
     })
   })
 
+  fastify.get("/difficulty", async () => {
+    let difficulty = await getDataFromTable("difficulty")
+    return difficulty.map((item) => {
+      return {
+        ...item
+      }
+    })
+  })
+
   done()
 }
