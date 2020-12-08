@@ -50,6 +50,7 @@ module.exports = function (fastify, opts, done) {
         let features = await getDataFromTable("features")
         if (!features) features = []
         const feature = req.body
+        const newId = features.length > 0 ? features[features.length-1].id + 1 : 1
         await new Promise((resolve, reject) => {
           /*
             INSERT INTO features (id, name, position, track, type, difficulty, status)
@@ -66,7 +67,7 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO features (id, name, position, track, type, difficulty, status)
           VALUES (
-            '${features.length > 0 ? features[features.length-1].id + 1 : 1}',
+            '${newId}',
             '${feature.name}',
             ${feature.position ?? null},
             '${feature.track}',
@@ -81,6 +82,9 @@ module.exports = function (fastify, opts, done) {
         })
         return {
           "success": true,
+          "message": {
+            "id": newId
+          }
         }
       } catch(err) {
         return {

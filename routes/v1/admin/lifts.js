@@ -91,12 +91,13 @@ module.exports = function (fastify, opts, done) {
       try {
         const lifts = await getDataFromTable("lifts")
         const lift = req.body
+        const newId = lifts.length > 0 ? lifts[lifts.length-1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
             lifts (id, name, status, start_position, end_position, elevation, length, type, map_name, zone)
           VALUES (
-            '${lifts[lifts.length-1].id + 1}',
+            '${newId}',
             '${lift.name}',
             '${lift.status}',
             ${lift.start_position ?? null},
@@ -114,6 +115,9 @@ module.exports = function (fastify, opts, done) {
         })
         return {
           "success": true,
+          "message": {
+            "id": newId
+          }
         }
       } catch(err) {
         res.code = 500
