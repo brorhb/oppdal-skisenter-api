@@ -12,64 +12,60 @@ module.exports = function (fastify, opts, done) {
         const pathParams = req.url.split("/")
         const liftId = pathParams[pathParams.length - 1]
         const lift = req.body
+        console.log(lift)
         await new Promise((resolve, reject) => {
           connection.query(`
-          UPDATE
-            lifts
-          SET
-            name = '${lift.name}',
-            status = '${lift.status}',
-            start_position = ${lift.start_position ?? null},
-            end_position = ${lift.end_position ?? null},
-            elevation = '${lift.elevation}',
-            length = '${lift["length"]}',
-            type = '${lift.type}',
-            map_name = '${lift.map_name}',
-            zone = '${lift.zone}'
-          WHERE id = '${liftId}';
-          `, (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+            UPDATE
+              lifts
+            SET
+              name = ?,
+              status = ?,
+              start_position = ?,
+              end_position = ?,
+              elevation = ?,
+              length = ?,
+              type = ?,
+              map_name = ?,
+              zone = ?
+            WHERE id = ?
+            `,
+            [lift.name, lift.status, lift.start_position, lift.end_position, lift.elevation, lift["length"], lift.type, lift.map_name, lift.zone, liftId],
+            (error, result, fields) => {
+              if (error) reject(error)
+              resolve(result)
+            }
+          )
         })
-        await new Promise((resolve, reject) => {
-          connection.query(`
-          REPLACE INTO
-            lift_coord_in_map
-          SET
-            coord = '${lift.coords}'
-          WHERE track = '${liftId}';
-          `, (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
-        })
-        
-        await new Promise(async (resolve, reject) => {
-          const coords = await getDataFromTable("track_coord_in_map")
-          if (coords.find((item) => item.lift == liftId)) {
-            connection.query(`
-              UPDATE
-                lift_coord_in_map
-              SET
-                coord = '${lift.coords}'
-              WHERE track = '${liftId}';
-              `, (error, result) => {
+        if (lift.coords) {
+          await new Promise(async (resolve, reject) => {
+            const coords = await getDataFromTable("lift_coord_in_map")
+            if (coords.find((item) => item.lift == liftId)) {
+              connection.query(`
+                UPDATE
+                  lift_coord_in_map
+                SET
+                  coord = '${lift.coords}'
+                WHERE lift = '${liftId}';
+                `, (error, result) => {
+                  if (error) reject(error)
+                  resolve(result)
+                }
+              )
+            } else {
+              connection.query(`
+                INSERT INTO
+                  lift_coord_in_map (coord, lift)
+                VALUES (
+                  ${lift.coords},
+                  ${lift.id}
+                )
+              `), (error, result) => {
                 if (error) reject(error)
                 resolve(result)
               }
-            )
-          } else {
-            connection.query(`
-              INSERT INTO
-                track_coord_in_map (coord, lift)
-              VALUES (
-                ${lift.coords},
-                ${lift.id}
-              )
-            `)
-          }
-        })
+            }
+          })
+        }
 
         return {
           "success": true

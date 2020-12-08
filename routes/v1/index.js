@@ -154,5 +154,10 @@ module.exports = function (fastify, opts, done) {
     })
   })
 
+  fastify.get("/lift-types", async () => {
+    let types = await getDataFromTable("lift_type")
+    return types
+  })
+
   done()
 }
