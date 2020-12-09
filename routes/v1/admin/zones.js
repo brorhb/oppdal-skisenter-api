@@ -44,12 +44,13 @@ module.exports = function (fastify, opts, done) {
       try {
         const zones = await getDataFromTable("zone")
         const zone = req.body
+        const newId = zones.length > 0 ? zones[zones.length-1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
             zone (id, name)
           VALUES (
-            '${zones[zones.length-1].id + 1}',
+            '${newId}',
             '${zone.name}'
           );
           `, (error, result) => {
@@ -59,6 +60,9 @@ module.exports = function (fastify, opts, done) {
         })
         return {
           "success": true,
+          "message": {
+            "id": newId
+          }
         }
       } catch(err) {
         res.code = 500

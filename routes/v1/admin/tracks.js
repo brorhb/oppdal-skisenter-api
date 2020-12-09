@@ -17,14 +17,14 @@ module.exports = function (fastify, opts, done) {
           UPDATE
             tracks
           SET
-            name = '${track.name}',
-            connected_tracks = '${JSON.stringify(track.connected_tracks)}',
-            season = '${track.season}',
-            status = '${track.status}',
-            length = '${track["length"]}',
-            difficulty = '${track.difficulty}',
-            lifts = '${JSON.stringify(track.lifts)}',
-            zone = '${track.zone}'
+            name = '${track.name}'
+            ${track.connected_tracks ? ", connected_tracks = " + JSON.stringify(track.connected_tracks) : ""}
+            ${track.season ? ", season = " + track.season : ""}
+            ${track.status ? ", status = " + track.status : ""}
+            ${track["length"] ? ", length = " + track["length"] : ""}
+            ${track.difficulty ? ", difficulty = " + track.difficulty : ""}
+            ${track.lifts ? ", lifts = " + JSON.stringify(track.lifts) : ""}
+            ${track.zone ? ", zone = " + track.zone : ""}
           WHERE id = '${trackId}';
           `, (error, result) => {
             if (error) reject(error)
@@ -75,13 +75,14 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       const tracks = await getDataFromTable("tracks")
       const track = req.body
+      const newId = tracks.length > 0 ? tracks[tracks.length-1].id + 1 : 1
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
             tracks (id, name, connected_tracks, season, status, length, difficulty, lifts, zone)
           VALUES (
-            '${tracks[tracks.length-1].id + 1}',
+            '${newId}',
             '${track.name}',
             '${JSON.stringify(track.connected_tracks)}',
             '${track.season}',
@@ -105,6 +106,9 @@ module.exports = function (fastify, opts, done) {
       }
       return {
         "success": true,
+        "message": {
+          "id": newId
+        }
       }
     }
   })

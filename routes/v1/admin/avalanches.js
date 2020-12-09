@@ -46,12 +46,13 @@ module.exports = function (fastify, opts, done) {
         let avalanches = await getDataFromTable("avalanche_log")
         if (!avalanches) avalanches = []
         const avalanche = req.body
+        const newId = avalanches.length > 0 ? avalanches[avalanches.length-1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
             avalanche_log (id, level, timestamp)
           VALUES (
-            '${avalanches.length > 0 ? avalanches[avalanches.length-1].id + 1 : 1}',
+            '${newId}',
             '${avalanche.level}',
             '${Date.now()}'
           );
@@ -62,6 +63,9 @@ module.exports = function (fastify, opts, done) {
         })
         return {
           "success": true,
+          "message": {
+            "id": newId
+          }
         }
       } catch(err) {
         res.code = 500
