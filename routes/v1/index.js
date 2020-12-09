@@ -20,14 +20,14 @@ module.exports = function (fastify, opts, done) {
       const y = coord?.split(",")[1].trim()
       return {
         ...track,
-        difficulty: difficulty_types.find((item) => item.id === track.difficulty).label,
-        status: status_types.find((status) => status.id === track.status).name,
+        difficulty: difficulty_types.find((item) => item.id === track.difficulty)?.label,
+        status: status_types.find((status) => status.id === track.status)?.name,
         lifts: track.lifts
           ? JSON.parse(track.lifts).map((id) => lifts.find((lift) => lift.id === id))
-          : null,
+          : [],
         connected_tracks: track.connected_tracks
           ? JSON.parse(track.connected_tracks).map((id) => tracks.find((t) => t.id === id))
-          : null,
+          : [],
         coords: coord ? {
           "x": x,
           "y": y
@@ -46,10 +46,12 @@ module.exports = function (fastify, opts, done) {
       const coord = lift_coords_in_map.find((item) => item.lift === lift.id)?.coord
       const x = coord?.split(",")[0].trim()
       const y = coord?.split(",")[1].trim()
+      const status = status_types.find((status) => status.id === lift.status)?.name
+      const type = lift_types.find((type) => type.id === lift.type)?.type
       return {
         ...lift,
-        status: status_types.find((status) => status.id === lift.status).name,
-        type: lift_types.find((type) => type.id === lift.type).type,
+        status: status,
+        type: type,
         coords: coord ? {
           "x": x,
           "y": y
