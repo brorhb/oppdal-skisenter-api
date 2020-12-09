@@ -17,16 +17,18 @@ module.exports = function (fastify, opts, done) {
           UPDATE
             tracks
           SET
-            name = '${track.name}'
-            ${track.connected_tracks ? ", connected_tracks = " + JSON.stringify(track.connected_tracks) : ""}
-            ${track.season ? ", season = " + track.season : ""}
-            ${track.status ? ", status = " + track.status : ""}
-            ${track["length"] ? ", length = " + track["length"] : ""}
-            ${track.difficulty ? ", difficulty = " + track.difficulty : ""}
-            ${track.lifts ? ", lifts = " + JSON.stringify(track.lifts) : ""}
-            ${track.zone ? ", zone = " + track.zone : ""}
-          WHERE id = '${trackId}';
-          `, (error, result) => {
+            name = ?,
+            connected_tracks = ?,
+            season = ?,
+            status = ?,
+            length = ?,
+            difficulty = ?,
+            lifts = ?,
+            zone = ?
+          WHERE id = ?
+          `,
+          [track.name, JSON.stringify(track.connected_tracks), track.season, track.status, track["length"], track.difficulty, JSON.stringify(track.lifts), track.zone, trackId],
+          (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
