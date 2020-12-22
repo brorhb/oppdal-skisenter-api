@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
 
 var weatherCache
+var avalancheCache
 
 module.exports = function (fastify, opts, done) {
 
@@ -127,15 +128,26 @@ module.exports = function (fastify, opts, done) {
     }
   })
 
-  fastify.get("/avalanche-warnings", async () => {
-    let warnings = await getDataFromTable("avalanche_log")
-    let levels = await getDataFromTable("avalanche_levels")
-    return warnings.map((item) => {
-      return {
-        ...item,
-        level: levels.find((level) => level.id === item.level)
+  fastify.get("/avalanche-warning", async () => {
+    if (avalancheCache && (Date.now() - avalancheCache.dateTime) < 3600000) {
+      return avalancheCache.result
+    } else {
+      const result = await new Promise((resolve, reject) => {
+        fetch(process.env.AVALANCHE_URL).then(data => resolve(data.json())).catch(err => reject(err))
+      })
+      let latestWarning = result[0]
+      let warning = {
+        "region": latestWarning.RegionName,
+        "level": latestWarning.DangerLevel,
+        "published": latestWarning.PublishTime,
+        "message": latestWarning.MainText
       }
-    })
+      avalancheCache = {
+        "dateTime": Date.now(),
+        "result": warning
+      }
+      return warning
+    }
   })
   
   fastify.get("/zones", async () => {
