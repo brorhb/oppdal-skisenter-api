@@ -133,7 +133,7 @@ module.exports = function (fastify, opts, done) {
       return avalancheCache.result
     } else {
       const result = await new Promise((resolve, reject) => {
-        fetch(process.env.AVALANCHE_URL.replace("{date}", createDate()))
+        fetch(process.env.AVALANCHE_URL.replaceAll("{date}", createDate()))
           .then(data => resolve(data.json()))
           .catch(err => reject(err))
       })
