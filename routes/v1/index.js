@@ -133,7 +133,9 @@ module.exports = function (fastify, opts, done) {
       return avalancheCache.result
     } else {
       const result = await new Promise((resolve, reject) => {
-        fetch(process.env.AVALANCHE_URL).then(data => resolve(data.json())).catch(err => reject(err))
+        fetch(process.env.AVALANCHE_URL.replace("{date}", createDate()))
+          .then(data => resolve(data.json()))
+          .catch(err => reject(err))
       })
       let latestWarning = result[0]
       let warning = {
@@ -174,4 +176,13 @@ module.exports = function (fastify, opts, done) {
   })
 
   done()
+}
+
+function createDate() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = today.getMonth()
+  let day = `${today.getDate()}`
+  if (day.length < 2) day = `0${day}`
+  return `${year}-${month}-${day}`
 }
