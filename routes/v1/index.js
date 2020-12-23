@@ -132,8 +132,9 @@ module.exports = function (fastify, opts, done) {
     if (avalancheCache && (Date.now() - avalancheCache.dateTime) < 3600000) {
       return avalancheCache.result
     } else {
+      const url = `${process.env.AVALANCHE_URL}`.toString()
       const result = await new Promise((resolve, reject) => {
-        fetch(process.env.AVALANCHE_URL.replaceAll("{date}", createDate()))
+        fetch(url.replace("/{date}/g", createDate()))
           .then(data => resolve(data.json()))
           .catch(err => reject(err))
       })
