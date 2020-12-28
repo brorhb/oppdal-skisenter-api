@@ -12,7 +12,6 @@ module.exports = function (fastify, opts, done) {
         const pathParams = req.url.split("/")
         const liftId = pathParams[pathParams.length - 1]
         const lift = req.body
-        console.log(lift)
         await new Promise((resolve, reject) => {
           connection.query(`
             UPDATE
