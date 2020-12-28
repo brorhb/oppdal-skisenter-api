@@ -38,6 +38,40 @@ module.exports = function (fastify, opts, done) {
     })
     return hash
   })*/
+  fastify.route({
+    method: "PATCH",
+    url: "/toggle-status/:type/:id/:status",
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      try {
+        const pathParams = req.url.split("/")
+        const type = pathParams[pathParams.length - 3]
+        const id = pathParams[pathParams.length - 2]
+        const status = pathParams[pathParams.length - 1]
+        await new Promise((resolve, reject) => {
+          connection.query(`
+            UPDATE ${type}
+            SET status = ?
+            WHERE id = ?
+            `,
+            [parseInt(status), parseInt(id)],
+            (error, result, fields) => {
+              if (error) reject(error)
+              resolve(result)
+            }
+          )
+        })
+        return {
+          success: true
+        }
+      } catch(err) {
+        return {
+          success: false,
+          message: err
+        }
+      }
+    }
+  })
 
   fastify.post("/login", async (req, res) => {
     const password = req.body.password
