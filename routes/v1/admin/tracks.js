@@ -123,8 +123,14 @@ module.exports = function (fastify, opts, done) {
       try {
         const pathParams = req.url.split("/")
         const trackId = pathParams[pathParams.length - 1]
+        await new Promise((resolve, reject) => {
+          connection.query("DELETE FROM track_coord_in_map WHERE track = ?", [trackId], (err, res) => {
+            if (err) reject(err)
+            resolve(res)
+          })
+        })
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM tracks WHERE id = ${trackId}`, (err, res) => {
+          connection.query("DELETE FROM tracks WHERE id = ?", [trackId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

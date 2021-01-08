@@ -132,8 +132,14 @@ module.exports = function (fastify, opts, done) {
       try {
         const pathParams = req.url.split("/")
         const liftId = pathParams[pathParams.length - 1]
+        await new Promise((resolve, reject) => {
+          connection.query("DELETE FROM lift_coord_in_map WHERE lift = ?", [liftId], (err, res) => {
+            if (err) reject(err)
+            resolve(res)
+          })
+        })
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM lifts WHERE id = ${liftId}`, (err, res) => {
+          connection.query("DELETE FROM lifts WHERE id = ?", [liftId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })
