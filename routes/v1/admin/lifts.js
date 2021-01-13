@@ -43,9 +43,9 @@ module.exports = function (fastify, opts, done) {
                 UPDATE
                   lift_coord_in_map
                 SET
-                  coord = '${lift.coords}'
-                WHERE lift = '${liftId}';
-                `, (error, result) => {
+                  coord = ?
+                WHERE lift = ?;
+                `, [lift.coords, liftId], (error, result) => {
                   if (error) reject(error)
                   resolve(result)
                 }
@@ -54,11 +54,8 @@ module.exports = function (fastify, opts, done) {
               connection.query(`
                 INSERT INTO
                   lift_coord_in_map (coord, lift)
-                VALUES (
-                  ${lift.coords},
-                  ${lift.id}
-                )
-              `), (error, result) => {
+                VALUES (?, ?)
+              `), [lift.coords, lift.id], (error, result) => {
                 if (error) reject(error)
                 resolve(result)
               }
@@ -91,19 +88,8 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO
             lifts (id, name, status, start_position, end_position, elevation, length, type, map_name, zone)
-          VALUES (
-            '${newId}',
-            '${lift.name}',
-            '${lift.status}',
-            ${lift.start_position ?? null},
-            ${lift.end_position ?? null},
-            '${lift.elevation}',
-            '${lift["length"]}',
-            '${lift.type}',
-            '${lift.map_name}',
-            '${lift.zone}'
-          );
-          `, (error, result) => {
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+          `, [newId, lift.name, lift.status, lift.start_position, lift.end_position, lift.elevation, lift["length"], lift.type, lift.map_name, lift.zone], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -132,8 +118,14 @@ module.exports = function (fastify, opts, done) {
       try {
         const pathParams = req.url.split("/")
         const liftId = pathParams[pathParams.length - 1]
+        await new Promise((resolve, reject) => {
+          connection.query("DELETE FROM lift_coord_in_map WHERE lift = ?", [liftId], (err, res) => {
+            if (err) reject(err)
+            resolve(res)
+          })
+        })
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM lifts WHERE id = ${liftId}`, (err, res) => {
+          connection.query("DELETE FROM lifts WHERE id = ?", [liftId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

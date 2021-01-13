@@ -17,9 +17,9 @@ module.exports = function (fastify, opts, done) {
           UPDATE
             zone
           SET
-            name = '${zone.name}'
-          WHERE id = '${zoneId}';
-          `, (error, result) => {
+            name = ?
+          WHERE id = ?;
+          `, [zone.name, zoneId], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -49,11 +49,8 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO
             zone (id, name)
-          VALUES (
-            '${newId}',
-            '${zone.name}'
-          );
-          `, (error, result) => {
+          VALUES (?, ?);
+          `, [newId, zone.name], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -83,7 +80,7 @@ module.exports = function (fastify, opts, done) {
         const pathParams = req.url.split("/")
         const zoneId = pathParams[pathParams.length - 1]
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM zone WHERE id = ${zoneId}`, (err, res) => {
+          connection.query(`DELETE FROM zone WHERE id = ?`, [zoneId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

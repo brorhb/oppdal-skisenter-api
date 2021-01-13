@@ -40,9 +40,9 @@ module.exports = function (fastify, opts, done) {
               UPDATE
                 track_coord_in_map
               SET
-                coord = '${track.coords}'
-              WHERE track = '${trackId}';
-              `, (error, result) => {
+                coord = ?
+              WHERE track = ?;
+              `, [track.coords, trackId], (error, result) => {
                 if (error) reject(error)
                 resolve(result)
               }
@@ -51,11 +51,8 @@ module.exports = function (fastify, opts, done) {
             connection.query(`
               INSERT INTO
                 track_coord_in_map (coord, track)
-              VALUES (
-                ${track.coords},
-                ${track.id}
-              )
-            `)
+              VALUES (?, ?)
+            `, [track.coords, track.id])
           }
         })
       } catch(err) {
@@ -83,18 +80,8 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO
             tracks (id, name, connected_tracks, season, status, length, difficulty, lifts, zone)
-          VALUES (
-            '${newId}',
-            '${track.name}',
-            '${JSON.stringify(track.connected_tracks)}',
-            '${track.season}',
-            '${track.status}',
-            '${track["length"]}',
-            '${track.difficulty}',
-            '${JSON.stringify(track.lifts)}',
-            '${track.zone}'
-          );
-          `, (error, result) => {
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+          `, [newId, track.name, JSON.stringify(track.connected_tracks), track.season, track.status, track["length"], track.difficulty, JSON.stringify(track.lifts), track.zone], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -123,8 +110,14 @@ module.exports = function (fastify, opts, done) {
       try {
         const pathParams = req.url.split("/")
         const trackId = pathParams[pathParams.length - 1]
+        await new Promise((resolve, reject) => {
+          connection.query("DELETE FROM track_coord_in_map WHERE track = ?", [trackId], (err, res) => {
+            if (err) reject(err)
+            resolve(res)
+          })
+        })
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM tracks WHERE id = ${trackId}`, (err, res) => {
+          connection.query("DELETE FROM tracks WHERE id = ?", [trackId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

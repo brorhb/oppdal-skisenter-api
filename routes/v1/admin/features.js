@@ -52,30 +52,10 @@ module.exports = function (fastify, opts, done) {
         const feature = req.body
         const newId = features.length > 0 ? features[features.length-1].id + 1 : 1
         await new Promise((resolve, reject) => {
-          /*
-            INSERT INTO features (id, name, position, track, type, difficulty, status)
-            VALUES (
-              '${features[features.length-1].id + 1}',
-              '${feature.name}',
-              '${feature.position ?? null}',
-              '${feature.track}',
-              '${feature.type}',
-              '${feature.difficulty}',
-              '${feature.status}'
-              );
-          */
           connection.query(`
           INSERT INTO features (id, name, position, track, type, difficulty, status)
-          VALUES (
-            '${newId}',
-            '${feature.name}',
-            ${feature.position ?? null},
-            '${feature.track}',
-            '${feature.type}',
-            '${feature.difficulty}',
-            '${feature.status}'
-          );
-          `, (error, result) => {
+          VALUES (?, ?, ?, ?, ?, ?, ?);
+          `, [newId, feature.name, feature.position, feature.track, feature.type, feature.difficulty, feature.status], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -104,7 +84,7 @@ module.exports = function (fastify, opts, done) {
         const pathParams = req.url.split("/")
         const featureId = pathParams[pathParams.length - 1]
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM features WHERE id = ${featureId}`, (err, res) => {
+          connection.query(`DELETE FROM features WHERE id = ?`, [featureId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

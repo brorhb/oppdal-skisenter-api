@@ -52,14 +52,8 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO
             facilities (id, name, type, status, zone)
-          VALUES (
-            '${newId}',
-            '${facility.name}',
-            '${facility.type}',
-            ${facility.status},
-            ${facility.zone}
-          );
-          `, (error, result) => {
+          VALUES ( ?, ?, ?, ?, ?);
+          `, [newId, facility.name, facility.type, facility.status, facility.zone], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -89,7 +83,7 @@ module.exports = function (fastify, opts, done) {
         const pathParams = req.url.split("/")
         const facilityId = pathParams[pathParams.length - 1]
         const result = await new Promise((resolve, reject) => {
-          connection.query(`DELETE FROM facilities WHERE id = ${facilityId}`, (err, res) => {
+          connection.query(`DELETE FROM facilities WHERE id = ?`, [facilityId], (err, res) => {
             if (err) reject(err)
             resolve(res)
           })

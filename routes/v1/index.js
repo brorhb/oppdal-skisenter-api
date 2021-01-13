@@ -162,6 +162,13 @@ module.exports = function (fastify, opts, done) {
     })
   })
 
+  fastify.get("/cameras", async () => {
+    let cameras = await getDataFromTable("camera")
+    return cameras.map((item) => {
+      return item
+    })
+  })
+
   fastify.get("/difficulty", async () => {
     let difficulty = await getDataFromTable("difficulty")
     return difficulty.map((item) => {
