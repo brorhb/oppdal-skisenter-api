@@ -98,22 +98,44 @@ module.exports = function (fastify, opts, done) {
     if (weatherCache && (Date.now() - weatherCache.dateTime) < 300000) {
       return weatherCache.result
     } else {
+      let weatherStations = await getDataFromTable("weather_station")
+      let weatherStationZones = await getDataFromTable("weather_station_zone")
       const urls = [
-        `http://api.holfuy.com/live/?s=1346&pw=${process.env.HOLFUY_API_KEY}&m=JSON&tu=C&su=m/s`,
-        `http://api.holfuy.com/live/?s=796&pw=${process.env.HOLFUY_API_KEY}&m=JSON&tu=C&su=m/s`
+        ...weatherStations.map((item) => {
+          if (item.url.includes("{PASSWORD}")) {
+            item.url = item.url.replace("{PASSWORD}", process.env.HOLFUY_API_KEY)
+          }
+          return item.url
+        })
       ]
-      const result = await Promise.all([
+      console.log(urls)
+      let results = []
+      await Promise.all([
         ...urls.map(
           (url) => new Promise((resolve, reject) => {
-            fetch(url).then(data => resolve(data.json())).catch(err => reject(err))
+            fetch(url)
+              .then(data => data.json())
+              .then(data => {
+                if ("measurements" in data) {
+                  results = [...results, ...data.measurements]
+                } else {
+                  results = [...results, data]
+                }
+                resolve(results)
+              })
+              .catch(err => reject(err))
           })
         )
       ])
+      results = results.map((station) => {
+        station["zone"] = weatherStationZones.find((item) => item.station_id === station.stationId)?.zone_id
+        return station
+      })
       weatherCache = {
         "dateTime": Date.now(),
-        "result": result
+        "result": results
       }
-      return result
+      return results
     }
   })
 
