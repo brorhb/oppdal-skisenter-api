@@ -220,6 +220,15 @@ CREATE TABLE `zones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `important_message`;
+CREATE TABLE `important_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `is_live` boolean,
+  `timestamp` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (1, 'none'),
 (2, 'low'),
@@ -392,7 +401,8 @@ INSERT INTO `user_roles` (`id`, `type`) VALUES
 (1, 'admin');
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
-(1, 'admin', '$2b$10$7c/YHI//E9bas8h8gIN3/O7BmdBZ5wEpwFycMp0BT4sNH/gsMZnGS', 1);
+(1, 'admin', '$2b$10$7c/YHI//E9bas8h8gIN3/O7BmdBZ5wEpwFycMp0BT4sNH/gsMZnGS', 1),
+(2, 'admin2', '$2a$10$ruD1UD8jGgY1.m03VdhElurcWI9VR6ALuxwcEcXTrlbxm8uGXgoBq', 1);
 
 INSERT INTO `weather_station` (`id`, `label`, `url`) VALUES
 (1, 'All', 'http://api.holfuy.com/live/?s=all&pw={PASSWORD}&m=JSON&tu=C&su=m/s&daily');
@@ -409,6 +419,9 @@ INSERT INTO `zones` (`id`, `name`) VALUES
 (4, 'Stølen'),
 (11, 'Transport');
 
+INSERT INTO `important_message`(`id`, `message`, `is_live`, `timestamp`) VALUES 
+(1, 'Vanglisa stengt grunnet vind.', true, '2020-12-03'),
+(2, 'Hovden stegnt grunnet vind', true, '2021-12-03');
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
