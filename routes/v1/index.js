@@ -205,6 +205,12 @@ module.exports = function (fastify, opts, done) {
     return types
   })
 
+  fastify.get("/important-message", async () => {
+    let messages = await getDataFromTable("important_message")
+    let message = messages[messages.length-1];
+    return message;
+  })
+
   done()
 }
 
