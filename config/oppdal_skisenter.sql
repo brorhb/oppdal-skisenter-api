@@ -40,7 +40,7 @@ CREATE TABLE `avalanche_log` (
 
 DROP TABLE IF EXISTS `camera`;
 CREATE TABLE `camera` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT 'utf8mb4_0900_ai_ci',
   `url` varchar(255) DEFAULT 'utf8mb4_0900_ai_ci',
   `zone` int(11) DEFAULT NULL,
@@ -357,7 +357,7 @@ INSERT INTO `track_coord_in_map` (`id`, `coord`, `track`) VALUES
 (391, '293,275', 20);
 
 INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `length`, `difficulty`, `lifts`, `zone`) VALUES
-(1, 'Danskeløypa', '[1,2]', 2, 2, 1500, 2, '[20]', 1),
+(1, 'Danskeløypa', '[1,3]', 2, 2, 1500, 2, '[20]', 1),
 (3, 'Pomaløypa', '[]', 2, 2, 1200, 2, '[20,4,14,15]', 1),
 (4, 'Midtløypa', '[]', 2, 2, 1400, 2, '[]', 1),
 (5, 'Utforløypa', '[6]', 2, 2, 1600, 3, '[18]', 1),
