@@ -4,6 +4,7 @@ const getDataFromTable = require('../../helpers/getDatabaseTable')
 
 var weatherCache
 var avalancheCache
+var rainCache
 
 module.exports = function (fastify, opts, done) {
 
@@ -108,7 +109,6 @@ module.exports = function (fastify, opts, done) {
           return item.url
         })
       ]
-      console.log(urls)
       let results = []
       await Promise.all([
         ...urls.map(
@@ -139,14 +139,33 @@ module.exports = function (fastify, opts, done) {
     }
   })
 
-  fastify.get("/update-table", async () => {
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve()
-      }, 300)
-    })
-    return {
-      "message": "sucessfully emulated table update"
+  fastify.get("/rain-report", async () => {
+    if (rainCache && (Date.now() - rainCache.dateTime) < 3600000) {
+      return rainCache.result
+    } else {
+      const url = `${process.env.MET_URL}`.toString()
+      const result = await new Promise((resolve, reject) => {
+        fetch(url, {
+          headers: {
+            "User-Agent" : `${process.env.sitename}`
+          }
+        })
+          .then(async response => {
+            try {
+              const data = await response.json()
+              const rainData = data.properties.timeseries
+              resolve(rainData)
+           } catch(error) {
+              console.error(error)
+           }
+          })
+          .catch(error => reject(error))
+      }) 
+      rainCache = {
+        "dateTime": Date.now(),
+        "result": result
+      }
+      return result
     }
   })
 
@@ -175,6 +194,17 @@ module.exports = function (fastify, opts, done) {
     }
   })
   
+  fastify.get("/update-table", async () => {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, 300)
+    })
+    return {
+      "message": "sucessfully emulated table update"
+    }
+  })
+
   fastify.get("/zones", async () => {
     let zones = await getDataFromTable("zones")
     return zones.map((item) => {
