@@ -108,7 +108,6 @@ module.exports = function (fastify, opts, done) {
           return item.url
         })
       ]
-      console.log(urls)
       let results = []
       await Promise.all([
         ...urls.map(
@@ -116,11 +115,8 @@ module.exports = function (fastify, opts, done) {
             fetch(url)
               .then(data => data.json())
               .then(data => {
-                if ("measurements" in data) {
-                  results = [...results, ...data.measurements]
-                } else {
-                  results = [...results, data]
-                }
+                if ("measurements" in data) results = [...results, ...data.measurements]
+                else results = [...results, data]
                 resolve(results)
               })
               .catch(err => reject(err))
@@ -205,12 +201,11 @@ module.exports = function (fastify, opts, done) {
     return types
   })
 
-  fastify.get("/important-message", async () => {
-    let messages = await getDataFromTable("important_message")
-    // Fetch last 20 important messages
+  fastify.get("/alert", async () => {
+    let messages = await getDataFromTable("alert")
+    // Fetch last 20  messages
     return messages.slice(Math.max(messages.length - 20, 0));
   })
-
   done()
 }
 

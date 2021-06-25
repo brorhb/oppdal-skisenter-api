@@ -29,7 +29,7 @@ module.exports = function (fastify, opts, done) {
   fastify.register(require('./zones'), { prefix: '/zone' })
   fastify.register(require('./features'), { prefix: '/feature' })
   fastify.register(require('./avalanches'), { prefix: '/avalanche' })
-  fastify.register(require('./importantMessages'), { prefix: '/important-message' })
+  fastify.register(require('./alert'), { prefix: '/alert' })
   fastify.register(require('./camera'), { prefix: '/camera' })
   /*fastify.post("/create", async (req, res) => {
     const hash = await new Promise((resolve, reject) => {

@@ -220,8 +220,8 @@ CREATE TABLE `zones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `important_message`;
-CREATE TABLE `important_message` (
+DROP TABLE IF EXISTS `alert`;
+CREATE TABLE `alert` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) NOT NULL,
   `is_live` boolean,
@@ -419,7 +419,7 @@ INSERT INTO `zones` (`id`, `name`) VALUES
 (4, 'Stølen'),
 (11, 'Transport');
 
-INSERT INTO `important_message`(`id`, `message`, `is_live`, `timestamp`) VALUES 
+INSERT INTO `alert`(`id`, `message`, `is_live`, `timestamp`) VALUES 
 (1, 'Vanglisa stengt grunnet vind.', true, '2020-12-03'),
 (2, 'Hovden stegnt grunnet vind', true, '2021-12-03');
 
