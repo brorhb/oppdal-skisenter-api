@@ -116,11 +116,8 @@ module.exports = function (fastify, opts, done) {
             fetch(url)
               .then(data => data.json())
               .then(data => {
-                if ("measurements" in data) {
-                  results = [...results, ...data.measurements]
-                } else {
-                  results = [...results, data]
-                }
+                if ("measurements" in data) results = [...results, ...data.measurements]
+                else results = [...results, data]
                 resolve(results)
               })
               .catch(err => reject(err))
@@ -174,23 +171,18 @@ module.exports = function (fastify, opts, done) {
       return avalancheCache.result
     } else {
       const url = `${process.env.AVALANCHE_URL}`.toString()
+      let formattedUrl = url.replace("{date}", createDate())
+      formattedUrl = formattedUrl.replace("{date}", createFutureDate());
       const result = await new Promise((resolve, reject) => {
-        fetch(url.replace("/{date}/g", createDate()))
+        fetch(formattedUrl)
           .then(data => resolve(data.json()))
           .catch(err => reject(err))
       })
-      let latestWarning = result[0]
-      let warning = {
-        "region": latestWarning.RegionName,
-        "level": latestWarning.DangerLevel,
-        "published": latestWarning.PublishTime,
-        "message": latestWarning.MainText
-      }
       avalancheCache = {
         "dateTime": Date.now(),
-        "result": warning
+        "result": result
       }
-      return warning
+      return result
     }
   })
   
@@ -235,20 +227,31 @@ module.exports = function (fastify, opts, done) {
     return types
   })
 
-  fastify.get("/important-message", async () => {
-    let messages = await getDataFromTable("important_message")
-    // Fetch last 20 important messages
+  fastify.get("/alert", async () => {
+    let messages = await getDataFromTable("alert")
+    // Fetch last 20  messages
     return messages.slice(Math.max(messages.length - 20, 0));
   })
-
   done()
 }
 
 function createDate() {
   const today = new Date()
   const year = today.getFullYear()
-  const month = today.getMonth()
+  let month = today.getMonth()
+  month++;
   let day = `${today.getDate()}`
   if (day.length < 2) day = `0${day}`
   return `${year}-${month}-${day}`
+}
+function createFutureDate(){
+  let date = new Date();
+  date.setDate(date.getDate() + 6);
+  const year = date.getFullYear();
+  let month = date.getMonth()
+  month++;
+  let day = `${date.getDate()}`
+  if (day.length < 2) day = `0${day}`;
+  return `${year}-${month}-${day}`
+
 }

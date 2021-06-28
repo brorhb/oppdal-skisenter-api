@@ -11,9 +11,9 @@ module.exports = function(fastify, opts, done) {
             try {
                 const result = await new Promise((resolve, reject) => {
                     connection.query(`
-                    INSERT INTO important_message (message, is_live, timestamp)
+                    INSERT INTO alert (message, is_live, timestamp)
                     VALUES (?, ?, ?);
-                    `, [message.newMessage, 1, createDate()], (error, result) => {
+                    `, [message, 1, createDate()], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     });
@@ -43,7 +43,7 @@ module.exports = function(fastify, opts, done) {
                 await new Promise((resolve, reject) => {
                     connection.query(`
                     UPDATE 
-                        important_message
+                        alert
                     SET
                         message = ?,
                         is_live = ?,
