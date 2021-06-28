@@ -171,8 +171,9 @@ module.exports = function (fastify, opts, done) {
       return avalancheCache.result
     } else {
       const url = `${process.env.AVALANCHE_URL}`.toString()
-      let formattedUrl = url.replace("{date}", createDate())
-      formattedUrl = formattedUrl.replace("{date}", createFutureDate());
+      let dates = createDatesForAvalancheWarning();
+      let formattedUrl = url.replace("{date}", dates[0])
+      formattedUrl = formattedUrl.replace("{date}", dates[1]);
       const result = await new Promise((resolve, reject) => {
         fetch(formattedUrl)
           .then(data => resolve(data.json()))
@@ -244,14 +245,25 @@ function createDate() {
   if (day.length < 2) day = `0${day}`
   return `${year}-${month}-${day}`
 }
-function createFutureDate(){
+
+function createDatesForAvalancheWarning() {
+  let dates = [];
   let date = new Date();
-  date.setDate(date.getDate() + 6);
-  const year = date.getFullYear();
-  let month = date.getMonth()
+  date.setDate(date.getDate() - 4);
+  dates.push(formatDate(date));
+
+  date = new Date();
+  date.setDate(date.getDate() + 2);
+  dates.push(formatDate(date));
+
+  return dates;
+}
+
+function formatDate(date){
+  let year = date.getFullYear();
+  let month = date.getMonth();
   month++;
   let day = `${date.getDate()}`
   if (day.length < 2) day = `0${day}`;
-  return `${year}-${month}-${day}`
-
+  return `${year}-${month}-${day}`;
 }
