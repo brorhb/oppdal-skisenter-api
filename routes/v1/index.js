@@ -171,8 +171,9 @@ module.exports = function (fastify, opts, done) {
       return avalancheCache.result
     } else {
       const url = `${process.env.AVALANCHE_URL}`.toString()
-      let formattedUrl = url.replace("{date}", createDate())
-      formattedUrl = formattedUrl.replace("{date}", createFutureDate());
+      let dates = createDatesForAvalancheWarning();
+      let formattedUrl = url.replace("{date}", dates[0])
+      formattedUrl = formattedUrl.replace("{date}", dates[1]);
       const result = await new Promise((resolve, reject) => {
         fetch(formattedUrl)
           .then(data => resolve(data.json()))
@@ -232,26 +233,35 @@ module.exports = function (fastify, opts, done) {
     // Fetch last 20  messages
     return messages.slice(Math.max(messages.length - 20, 0));
   })
+
+  fastify.get("/snow-conditions", async () => {
+    let conditions = await getDataFromTable("snow_conditions")
+    return conditions.filter((item) => {
+      if(!item.is_live) return false;
+      return true;
+    })
+  })
   done()
 }
 
-function createDate() {
-  const today = new Date()
-  const year = today.getFullYear()
-  let month = today.getMonth()
-  month++;
-  let day = `${today.getDate()}`
-  if (day.length < 2) day = `0${day}`
-  return `${year}-${month}-${day}`
-}
-function createFutureDate(){
+function createDatesForAvalancheWarning() {
+  let dates = [];
   let date = new Date();
-  date.setDate(date.getDate() + 6);
-  const year = date.getFullYear();
-  let month = date.getMonth()
+  date.setDate(date.getDate() - 4);
+  dates.push(formatDate(date));
+
+  date = new Date();
+  date.setDate(date.getDate() + 2);
+  dates.push(formatDate(date));
+
+  return dates;
+}
+
+function formatDate(date){
+  let year = date.getFullYear();
+  let month = date.getMonth();
   month++;
   let day = `${date.getDate()}`
   if (day.length < 2) day = `0${day}`;
-  return `${year}-${month}-${day}`
-
+  return `${year}-${month}-${day}`;
 }

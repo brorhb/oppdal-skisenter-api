@@ -229,6 +229,18 @@ CREATE TABLE `alert` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `snow_conditions`;
+CREATE TABLE `snow_conditions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `is_live` boolean,
+  `timestamp` date DEFAULT NULL,
+  `zone_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `zone_id` (`zone_id`),
+  CONSTRAINT `zone_ibfk_1` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (1, 'none'),
 (2, 'low'),
@@ -422,6 +434,11 @@ INSERT INTO `zones` (`id`, `name`) VALUES
 INSERT INTO `alert`(`id`, `message`, `is_live`, `timestamp`) VALUES 
 (1, 'Vanglisa stengt grunnet vind.', true, '2020-12-03'),
 (2, 'Hovden stegnt grunnet vind', true, '2021-12-03');
+
+INSERT into `snow_conditions` (`id`, `message`, `is_live`, `timestamp`, `zone_id`) VALUES
+(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', true, '2020-12-03', 4),
+(2, 'Svært gode forhold i Vangslia i dag.', true, '2020-12-03', 1),
+(3, 'Svært gode forhold i Hovden i dag.', false, '2020-12-03', 3);
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
