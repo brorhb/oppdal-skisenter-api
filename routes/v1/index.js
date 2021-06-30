@@ -233,17 +233,15 @@ module.exports = function (fastify, opts, done) {
     // Fetch last 20  messages
     return messages.slice(Math.max(messages.length - 20, 0));
   })
-  done()
-}
 
-function createDate() {
-  const today = new Date()
-  const year = today.getFullYear()
-  let month = today.getMonth()
-  month++;
-  let day = `${today.getDate()}`
-  if (day.length < 2) day = `0${day}`
-  return `${year}-${month}-${day}`
+  fastify.get("/snow-conditions", async () => {
+    let conditions = await getDataFromTable("snow_conditions")
+    return conditions.filter((item) => {
+      if(!item.is_live) return false;
+      return true;
+    })
+  })
+  done()
 }
 
 function createDatesForAvalancheWarning() {
