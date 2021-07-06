@@ -432,8 +432,8 @@ INSERT INTO `zones` (`id`, `name`) VALUES
 (11, 'Transport');
 
 INSERT INTO `alert`(`id`, `message`, `is_live`, `timestamp`) VALUES 
-(1, 'Vanglisa stengt grunnet vind.', true, '2020-12-03'),
-(2, 'Hovden stegnt grunnet vind', true, '2021-12-03');
+(1, 'Vangslia stengt grunnet vind.', true, '2020-12-03'),
+(2, 'Hovden stengt grunnet vind', true, '2021-12-03');
 
 INSERT into `snow_conditions` (`id`, `message`, `is_live`, `timestamp`, `zone_id`) VALUES
 (1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', true, '2020-12-03', 4),
