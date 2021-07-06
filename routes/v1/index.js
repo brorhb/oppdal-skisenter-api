@@ -4,6 +4,7 @@ const getDataFromTable = require('../../helpers/getDatabaseTable')
 
 var weatherCache
 var avalancheCache
+var rainCache
 
 module.exports = function (fastify, opts, done) {
 
@@ -108,7 +109,6 @@ module.exports = function (fastify, opts, done) {
           return item.url
         })
       ]
-      console.log(urls)
       let results = []
       await Promise.all([
         ...urls.map(
@@ -116,11 +116,8 @@ module.exports = function (fastify, opts, done) {
             fetch(url)
               .then(data => data.json())
               .then(data => {
-                if ("measurements" in data) {
-                  results = [...results, ...data.measurements]
-                } else {
-                  results = [...results, data]
-                }
+                if ("measurements" in data) results = [...results, ...data.measurements]
+                else results = [...results, data]
                 resolve(results)
               })
               .catch(err => reject(err))
@@ -139,6 +136,57 @@ module.exports = function (fastify, opts, done) {
     }
   })
 
+  fastify.get("/rain-report", async () => {
+    if (rainCache && (Date.now() - rainCache.dateTime) < 3600000) {
+      return rainCache.result
+    } else {
+      const url = `${process.env.MET_URL}`.toString()
+      const result = await new Promise((resolve, reject) => {
+        fetch(url, {
+          headers: {
+            "User-Agent" : `${process.env.sitename}`
+          }
+        })
+          .then(async response => {
+            try {
+              const data = await response.json()
+              const rainData = data.properties.timeseries
+              resolve(rainData)
+           } catch(error) {
+              console.error(error)
+           }
+          })
+          .catch(error => reject(error))
+      }) 
+      rainCache = {
+        "dateTime": Date.now(),
+        "result": result
+      }
+      return result
+    }
+  })
+
+  fastify.get("/avalanche-warning", async () => {
+    if (avalancheCache && (Date.now() - avalancheCache.dateTime) < 3600000) {
+      return avalancheCache.result
+    } else {
+      const url = `${process.env.AVALANCHE_URL}`.toString()
+      let dates = createDatesForAvalancheWarning();
+      let formattedUrl = url.replace("{date}", dates[0])
+      formattedUrl = formattedUrl.replace("{date}", dates[1]);
+      const result = await new Promise((resolve, reject) => {
+        fetch(formattedUrl)
+          .then(data => resolve(data.json()))
+          .catch(err => reject(err))
+      })
+      avalancheCache = {
+        "dateTime": Date.now(),
+        "result": result
+      }
+      return result
+    }
+  })
+  
   fastify.get("/update-table", async () => {
     await new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -150,31 +198,6 @@ module.exports = function (fastify, opts, done) {
     }
   })
 
-  fastify.get("/avalanche-warning", async () => {
-    if (avalancheCache && (Date.now() - avalancheCache.dateTime) < 3600000) {
-      return avalancheCache.result
-    } else {
-      const url = `${process.env.AVALANCHE_URL}`.toString()
-      const result = await new Promise((resolve, reject) => {
-        fetch(url.replace("/{date}/g", createDate()))
-          .then(data => resolve(data.json()))
-          .catch(err => reject(err))
-      })
-      let latestWarning = result[0]
-      let warning = {
-        "region": latestWarning.RegionName,
-        "level": latestWarning.DangerLevel,
-        "published": latestWarning.PublishTime,
-        "message": latestWarning.MainText
-      }
-      avalancheCache = {
-        "dateTime": Date.now(),
-        "result": warning
-      }
-      return warning
-    }
-  })
-  
   fastify.get("/zones", async () => {
     let zones = await getDataFromTable("zones")
     return zones.map((item) => {
@@ -205,14 +228,40 @@ module.exports = function (fastify, opts, done) {
     return types
   })
 
+  fastify.get("/alert", async () => {
+    let messages = await getDataFromTable("alert")
+    // Fetch last 20  messages
+    return messages.slice(Math.max(messages.length - 20, 0));
+  })
+
+  fastify.get("/snow-conditions", async () => {
+    let conditions = await getDataFromTable("snow_conditions")
+    return conditions.filter((item) => {
+      if(!item.is_live) return false;
+      return true;
+    })
+  })
   done()
 }
 
-function createDate() {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = today.getMonth()
-  let day = `${today.getDate()}`
-  if (day.length < 2) day = `0${day}`
-  return `${year}-${month}-${day}`
+function createDatesForAvalancheWarning() {
+  let dates = [];
+  let date = new Date();
+  date.setDate(date.getDate() - 4);
+  dates.push(formatDate(date));
+
+  date = new Date();
+  date.setDate(date.getDate() + 2);
+  dates.push(formatDate(date));
+
+  return dates;
+}
+
+function formatDate(date){
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  month++;
+  let day = `${date.getDate()}`
+  if (day.length < 2) day = `0${day}`;
+  return `${year}-${month}-${day}`;
 }

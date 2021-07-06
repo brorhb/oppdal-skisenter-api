@@ -68,6 +68,75 @@ module.exports = function (fastify, opts, done) {
   })
 
   fastify.route({
+    method: "PATCH",
+    url: "/status",
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      const {type} = req.body
+      let status_type = 2;
+      if(type == "open") status_type = 1
+      try {
+        await new Promise((resolve, reject) => {
+          connection.query(`
+          UPDATE
+            tracks
+          SET
+            status = ?
+          `,[status_type],
+          (error, result) => {
+            if (error) reject(error)
+            resolve(result)
+          })
+        })
+      } catch(err) {
+        return {
+          "success": false,
+          "message": err
+        }
+      }
+      return {
+        "success": true
+      }
+    }
+  })
+
+  fastify.route({
+    method: "PATCH",
+    url: "/status-zone",
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      const {type, zone} = req.body
+      let status_type = 2;
+      if(type == "open") status_type = 1
+      try {
+        await new Promise((resolve, reject) => {
+          connection.query(`
+          UPDATE
+            tracks
+          SET
+            status = ?
+          WHERE
+            zone = ?
+          `,[status_type, zone],
+          (error, result) => {
+            if (error) reject(error)
+            resolve(result)
+          })
+        })
+      } catch(err) {
+        return {
+          "success": false,
+          "message": err
+        }
+      }
+      return {
+        "success": true
+      }
+    }
+  })
+  
+
+  fastify.route({
     method: "POST",
     preValidation: authMiddleware,
     url: "/add",
