@@ -254,7 +254,10 @@ function createDatesForAvalancheWarning() {
   date.setDate(date.getDate() + 2);
   dates.push(formatDate(date));
 
-  return dates;
+  // TEMP DATES FOR BRUKERTEST
+  let tempDates = ["2020-12-21", "2020-12-27"]
+  return tempDates
+  //return dates;
 }
 
 function formatDate(date){
