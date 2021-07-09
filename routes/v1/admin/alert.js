@@ -66,7 +66,30 @@ module.exports = function(fastify, opts, done) {
             }
         }
     })
-
+    fastify.route({
+        method: "DELETE",
+        preValidation: authMiddleware,
+        url: "/:id",
+        handler: async (req, res) => {
+          try {
+            await new Promise((resolve, reject) => {
+              connection.query('DELETE FROM alert WHERE id = ?', [req.params.id], (error, result) => {
+                if (error) reject(error);
+                resolve(result)
+              })
+            })
+            return {
+              "success": true
+            }
+          } catch (error) {
+            res.code = 500
+            return {
+              "success": false,
+              "message": error
+            }
+          }
+        }
+    })
     done();
 }
 
