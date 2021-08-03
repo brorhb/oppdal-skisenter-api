@@ -25,7 +25,8 @@ const clearDisplay = () => {
 
 const updateSlopes = (data) => {
     const CMD = 0x31;
-    sendPacket(CMD, data);
+    const testData = [0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72]
+    sendPacket(CMD, testData);
 }
 
 const updateLifts = (data) => {

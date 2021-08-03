@@ -255,6 +255,10 @@ module.exports = function (fastify, opts, done) {
     panoramaSign.updateLifts("test");
     console.log("/testlifts")
   })
+  fastify.get("/testslopes", async () => {
+    panoramaSign.updateSlopes("test");
+    console.log("/testslopes")
+  })
   done()
 }
 
