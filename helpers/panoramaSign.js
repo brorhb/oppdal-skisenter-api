@@ -25,13 +25,13 @@ const clearDisplay = () => {
 
 const updateSlopes = (data) => {
     const CMD = 0x31;
-    const testData = 0x67;
+    const testData = 0x66;
     sendPacket(CMD, testData);
 }
 
 const updateLifts = (data) => {
     const CMD = 0x32;
-    const dataTest = 0x72;
+    const dataTest = '67677267726767677267'
     sendPacket(CMD, dataTest);
 }
 
