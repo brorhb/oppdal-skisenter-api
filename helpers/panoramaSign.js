@@ -25,13 +25,13 @@ const clearDisplay = () => {
 
 const updateSlopes = (data) => {
     const CMD = 0x31;
-    const testData = [0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72]
+    const testData = 0x67;
     sendPacket(CMD, testData);
 }
 
 const updateLifts = (data) => {
     const CMD = 0x32;
-    const dataTest = 'ggggrrrrgrggrgrg'
+    const dataTest = 0x72;
     sendPacket(CMD, dataTest);
 }
 
@@ -66,12 +66,12 @@ const setAllRelays = (state) => {
 
 const sendPacket = (cmd, data) => {
     let packet = [STX, cmd, data, CRC, ETX];
-    //let hexVal = new Uint8Array(packet);
+    let hexVal = new Uint8Array(packet);
     console.log(packet);
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", packet.toString());
-        client.write(packet);
+        client.write(hexVal);
     });
     client.on('data', function(data) {
         console.log("data type", typeof data)
