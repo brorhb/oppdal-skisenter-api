@@ -66,7 +66,7 @@ const sendPacket = (cmd, data) => {
     //let packet = [STX, cmd, data, CRC, ETX];
     //let buffer = Buffer.from(packet);
     let packetAsString = ''+STX+cmd+data+CRC+ETX;
-
+    packetAsString = '000000101100111100110000000000000100'
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", packetAsString);
