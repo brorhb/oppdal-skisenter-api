@@ -31,7 +31,7 @@ const updateSlopes = (data) => {
 
 const updateLifts = (data) => {
     const CMD = 0x32;
-    const dataTest = 'gggggrrrrrrgggg'
+    const dataTest = '102'
     sendPacket(CMD, dataTest);
 }
 
