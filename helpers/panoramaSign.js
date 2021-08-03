@@ -63,14 +63,15 @@ const setAllRelays = (state) => {
 }
 
 const sendPacket = (cmd, data) => {
-    //let packet = [STX, cmd, data, CRC, ETX];
+    let packet = [STX, cmd, data, CRC, ETX];
+    let hexVal = new Uint8Array(packet);
     //let buffer = Buffer.from(packet);
-    let packetAsString = ''+STX+cmd+data+CRC+ETX;
-    packetAsString = '000000101100111100110000000000000100'
+    //let packetAsString = ''+STX+cmd+data+CRC+ETX;
+    //packetAsString = '000000101100111100110000000000000100'
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
-        console.log("Connected to panorama sign. Sending packet ", packetAsString);
-        client.write(packetAsString);
+        console.log("Connected to panorama sign. Sending packet ", hexVal.toString());
+        client.write(hexVal);
     });
     client.on('data', function(data) {
         console.log("data type", typeof data)
