@@ -63,7 +63,7 @@ const sendPacket = (cmd, data) => {
         client.write(buffer);
     });
     client.on('data', function(data) {
-        console.log("Recieved data:", data);
+        console.log("Recieved data:", data.toString());
         client.destroy();
         // TODO: check if data is ACK or NACK, and handle accordingly
     });
