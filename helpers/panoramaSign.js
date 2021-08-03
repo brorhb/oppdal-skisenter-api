@@ -9,7 +9,7 @@
 const net = require('net');
 
 // Temp
-const PORT = 80, HOST = '0.0.0.0';
+const PORT = 10029, HOST = '127.0.0.1';
 
 const STX = 0x02;
 const ETX = 0x04;
@@ -61,7 +61,20 @@ const sendPacket = (cmd, data) => {
         client.write(packet);
     });
     client.on('data', function(data) {
+        console.log("Recieved data:", data);
         client.destroy();
         // TODO: check if data is ACK or NACK, and handle accordingly
     });
+}
+
+function testPanoramaSign() {
+    //clearDisplay();
+
+    //updateSlopes('ggggggggggggggggggggggggggggggggggggggggggggg')
+
+    //updateLifts('rrrgggggggggggggggggggggggggggggggggggggggggg')
+
+    //updateRTC("1330");
+
+    //setAllRelays(true)
 }
