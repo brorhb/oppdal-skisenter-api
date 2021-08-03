@@ -31,7 +31,7 @@ const updateSlopes = (data) => {
 
 const updateLifts = (data) => {
     const CMD = 0x32;
-    const dataTest = '67677267726767677267'
+    const dataTest = 'gggrggrgrgrrrr'
     sendPacket(CMD, dataTest);
 }
 
@@ -71,7 +71,7 @@ const sendPacket = (cmd, data) => {
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", packet.toString());
-        client.write(hexVal);
+        client.write(`${packet}`);
     });
     client.on('data', function(data) {
         console.log("data type", typeof data)
