@@ -1,7 +1,7 @@
 const connection = require("../../connection")
 const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
-
+const panoramaSign = require('../../helpers/panoramaSign')
 var weatherCache
 var avalancheCache
 var rainCache
@@ -243,11 +243,13 @@ module.exports = function (fastify, opts, done) {
   })
 
   fastify.get("/turnoff", async () => {
-    
+    panoramaSign.setAllRelays(false);
+    console.log("/turnoff")
   });
 
   fastify.get("/turnon", async () => {
-
+    panoramaSign.setAllRelays(true);
+    console.log("/turnon")
   })
   done()
 }

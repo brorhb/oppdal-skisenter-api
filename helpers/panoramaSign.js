@@ -78,3 +78,5 @@ function testPanoramaSign() {
 
     //setAllRelays(true)
 }
+
+module.exports = {clearDisplay, updateSlopes, updateLifts, updateAvalanche, updateRTC, setAllRelays}
