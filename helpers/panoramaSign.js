@@ -9,7 +9,7 @@
 const net = require('net');
 
 // Temp
-const PORT = 10029, HOST = '127.0.0.1';
+const PORT = 10031, HOST = '127.0.0.1';
 
 const STX = 0x02;
 const ETX = 0x04;
@@ -54,11 +54,13 @@ const setAllRelays = (state) => {
 
 const sendPacket = (cmd, data) => {
     let packet = [STX, cmd, data, CRC, ETX];
+    let buffer = Buffer.from(packet);
+    
 
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", packet);
-        client.write(packet);
+        client.write(buffer);
     });
     client.on('data', function(data) {
         console.log("Recieved data:", data);
