@@ -243,12 +243,12 @@ module.exports = function (fastify, opts, done) {
   })
 
   fastify.get("/turnoff", async () => {
-    panoramaSign.setAllRelays(false);
+    panoramaSign.updateAvalancheRed();
     console.log("/turnoff")
   });
 
   fastify.get("/turnon", async () => {
-    panoramaSign.setAllRelays(true);
+    panoramaSign.updateAvalancheGreen();
     console.log("/turnon")
   })
   done()

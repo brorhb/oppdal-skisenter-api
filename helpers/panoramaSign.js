@@ -7,6 +7,7 @@
 // TODO: Bestemme om det skal det opprettes en connection til server som holdes åpen eller ny for vær pakke som skal sendes?
 // TODO: 
 const net = require('net');
+const { send } = require('process');
 
 // Temp
 const PORT = 10029, HOST = '127.0.0.1';
@@ -32,11 +33,20 @@ const updateLifts = (data) => {
     sendPacket(CMD, data);
 }
 
-const updateAvalanche = () => {
+const updateAvalancheRed = () => {
     const CMD = 0x33;
     const GREEN = 0x31;
     const YELLOW = 0x32;
     const RED = 0x33;
+    sendPacket(CMD, RED);
+}
+
+const updateAvalancheGreen = () => {
+    const CMD = 0x33;
+    const GREEN = 0x31;
+    const YELLOW = 0x32;
+    const RED = 0x33;
+    sendPacket(CMD, GREEN);
 }
 
 const updateRTC = (data) => {
@@ -88,4 +98,4 @@ function testPanoramaSign() {
     //setAllRelays(true)
 }
 
-module.exports = {clearDisplay, updateSlopes, updateLifts, updateAvalanche, updateRTC, setAllRelays}
+module.exports = {clearDisplay, updateSlopes, updateLifts, updateAvalancheRed, updateAvalancheGreen, updateRTC, setAllRelays}
