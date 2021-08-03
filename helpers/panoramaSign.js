@@ -63,14 +63,14 @@ const setAllRelays = (state) => {
 }
 
 const sendPacket = (cmd, data) => {
-    let packet = [STX, cmd, data, CRC, ETX];
-    let buffer = Buffer.from(packet);
-    
+    //let packet = [STX, cmd, data, CRC, ETX];
+    //let buffer = Buffer.from(packet);
+    let packetAsString = ''+STX+cmd+data+CRC+ETX;
 
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
-        console.log("Connected to panorama sign. Sending packet ", packet);
-        client.write(buffer);
+        console.log("Connected to panorama sign. Sending packet ", packetAsString);
+        client.write(packetAsString);
     });
     client.on('data', function(data) {
         console.log("data type", typeof data)
