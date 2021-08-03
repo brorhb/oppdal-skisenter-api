@@ -241,6 +241,14 @@ module.exports = function (fastify, opts, done) {
       return true;
     })
   })
+
+  fastify.get("/turnoff", async () => {
+    
+  });
+
+  fastify.get("/turnon", async () => {
+
+  })
   done()
 }
 
