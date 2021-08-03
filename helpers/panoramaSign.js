@@ -63,7 +63,12 @@ const sendPacket = (cmd, data) => {
         client.write(buffer);
     });
     client.on('data', function(data) {
-        console.log("Recieved data:", data.toString());
+        console.log("data type", typeof data)
+        try {console.log("as json string", JSON.stringify(data))} catch {}
+        if (typeof data === Buffer) {
+            console.log("size", data.length)
+        }
+        console.log("Recieved data:", `${data}`);
         client.destroy();
         // TODO: check if data is ACK or NACK, and handle accordingly
     });
