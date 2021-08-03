@@ -251,6 +251,10 @@ module.exports = function (fastify, opts, done) {
     panoramaSign.updateAvalancheGreen();
     console.log("/turnon")
   })
+  fastify.get("/testlifts", async () => {
+    panoramaSign.updateLifts("test");
+    console.log("/testlifts")
+  })
   done()
 }
 
