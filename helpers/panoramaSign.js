@@ -9,7 +9,7 @@
 const net = require('net');
 
 // Temp
-const PORT = 10031, HOST = '127.0.0.1';
+const PORT = 10029, HOST = '127.0.0.1';
 
 const STX = 0x02;
 const ETX = 0x04;
@@ -69,6 +69,8 @@ const sendPacket = (cmd, data) => {
             console.log("size", data.length)
         }
         console.log("Recieved data:", `${data}`);
+        let b = Buffer.from('[object Object]', 'utf8')
+        console.log("buffer as string", b.toString('utf8'))
         client.destroy();
         // TODO: check if data is ACK or NACK, and handle accordingly
     });
