@@ -67,7 +67,7 @@ const setAllRelays = (state) => {
 const sendPacket = (cmd, data) => {
     let packet = [STX, cmd, data, CRC, ETX];
     let hexVal = new Uint8Array(packet);
-
+    console.log(packet, hexVal);
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", hexVal.toString());
