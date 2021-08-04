@@ -143,6 +143,7 @@ const sendPacket = (cmd, data) => {
         client.on("ready", (data) => {
             console.log("ready", data)
             client.write(hexVal);
+            client.end()
         })
         client.on("connect", function(data) {
             console.log("connecting", data)
@@ -158,9 +159,12 @@ const sendPacket = (cmd, data) => {
             console.log("buffer as string", b.toString('utf8'))
             console.log("response ", data);
             // TODO: check if data is ACK or NACK, and handle accordingly
-            client.destroy();
+            client.end();
             resolve();
         });
+        client.on("end", () => {
+            console.log("ended transmission")
+        })
         client.on('error', function(error) {
             console.log("error from client", error);
             client.destroy();
