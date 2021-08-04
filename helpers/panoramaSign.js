@@ -32,12 +32,12 @@ const updateLifts = (data) => {
     /**
      * push 103 og 114 => ingenting skjer
      * push 0x67 og 0x72 => alle blir mørke
-     * 
+     * push 'g' og 'r' 0> ingenting skjer
      */
     let arr = [];
     data.forEach(lift => {
-        if(lift.status == 1) arr.push('g');
-        else arr.push('r');
+        if(lift.status == 1) arr.push(0x67);
+        else arr.push(0x61);
     })
     
     const CMD = 0x32;
