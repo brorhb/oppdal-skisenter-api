@@ -88,6 +88,11 @@ const updateLifts = async (data) => {
     console.log(arr);
     
     await sendPacket(0x31, arr[0]);
+    await new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, 3000)
+    })
     await sendPacket(0x32, arr[1]);
 }
 
