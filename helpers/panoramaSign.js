@@ -93,7 +93,7 @@ const updateLifts = async (data) => {
             resolve()
         }, 3000)
     })
-    await sendPacket(0x32, arr[1]);
+    //await sendPacket(0x32, arr[1]);
 }
 
 const updateAvalancheRed = () => {
@@ -138,11 +138,8 @@ const sendPacket = (cmd, data) => {
         let client = new net.Socket();
         client.connect(PORT, HOST, function() {
             console.log("Connected to panorama sign. Sending packet ", hexVal);
-            client.write(hexVal);
-            client.destroy();
-            resolve()
+            client.write(hexVal);            
         });
-        /*
         client.on('data', function(data) {
             console.log("data type", typeof data)
             try {console.log("as json string", JSON.stringify(data))} catch {}
@@ -153,10 +150,13 @@ const sendPacket = (cmd, data) => {
             let b = Buffer.from('[object Object]', 'utf8')
             console.log("buffer as string", b.toString('utf8'))
             console.log("response ", data);
-            resolve()
             // TODO: check if data is ACK or NACK, and handle accordingly
+            resolve();
         });
-        */
+        client.on('error', function(error) {
+            console.log("error from client", error);
+            reject(error);
+        })
     })
 }
 
