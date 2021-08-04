@@ -5,6 +5,7 @@
 
 // TODO: Bestemme om det skal det opprettes en connection til server som holdes åpen eller ny for vær pakke som skal sendes?
 // TODO: 
+const getDataFromTable = require('./getDatabaseTable')
 const net = require('net');
 
 // Temp
@@ -27,18 +28,18 @@ const updateSlopes = (data) => {
     sendPacket(CMD, testData);
 }
 const ledStates = {
-    "a": 61,
-    "g": 67,
-    "r": 72,
-    1: 67,
-    2: 72,
-    3: 72
+    "a": 0x61,
+    "g": 0x67,
+    "r": 0x72,
+    1: 0x67,
+    2: 0x72,
+    3: 0x72
 }
 const updateBillboards = () => {
     return new Promise(async (resolve, reject) => {
-        let lifts = await getDatabaseTable("lifts")
-        let tracks = await getDatabaseTable("tracks")
-        let facilities = await getDatabaseTable("facilities")
+        let lifts = await getDataFromTable("lifts")
+        let tracks = await getDataFromTable("tracks")
+        let facilities = await getDataFromTable("facilities")
 
         var arr = []
         var items = [...lifts, ...tracks, ...facilities]
