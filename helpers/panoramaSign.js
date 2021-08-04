@@ -151,10 +151,12 @@ const sendPacket = (cmd, data) => {
             console.log("buffer as string", b.toString('utf8'))
             console.log("response ", data);
             // TODO: check if data is ACK or NACK, and handle accordingly
+            client.destroy();
             resolve();
         });
         client.on('error', function(error) {
             console.log("error from client", error);
+            client.destroy();
             reject(error);
         })
     })
