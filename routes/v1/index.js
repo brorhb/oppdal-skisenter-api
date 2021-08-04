@@ -252,7 +252,8 @@ module.exports = function (fastify, opts, done) {
     console.log("/turnon")
   })
   fastify.get("/testlifts", async () => {
-    panoramaSign.updateLifts("test");
+    let lifts = await getDataFromTable("lifts")
+    panoramaSign.updateLifts(lifts);
     console.log("/testlifts")
   })
   fastify.get("/testslopes", async () => {

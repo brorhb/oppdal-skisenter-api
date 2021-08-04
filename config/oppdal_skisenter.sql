@@ -125,22 +125,23 @@ CREATE TABLE `lift_type` (
 
 DROP TABLE IF EXISTS `lifts`;
 CREATE TABLE `lifts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `status` int(11) DEFAULT '2',
+  `status` int DEFAULT '2',
   `start_position` float DEFAULT NULL,
   `end_position` float DEFAULT NULL,
-  `elevation` int(11) DEFAULT NULL,
-  `length` int(11) DEFAULT NULL,
-  `type` int(11) NOT NULL,
+  `elevation` int DEFAULT NULL,
+  `length` int DEFAULT NULL,
+  `type` int NOT NULL,
   `map_name` varchar(255) NOT NULL,
-  `zone` int(11) DEFAULT NULL,
+  `zone` int DEFAULT NULL,
+  `panorama_position` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `status` (`status`),
   CONSTRAINT `lifts_ibfk_1` FOREIGN KEY (`type`) REFERENCES `lift_type` (`id`),
   CONSTRAINT `lifts_ibfk_2` FOREIGN KEY (`status`) REFERENCES `status_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb3;
 
 DROP TABLE IF EXISTS `status_types`;
 CREATE TABLE `status_types` (
@@ -303,25 +304,25 @@ INSERT INTO `lift_type` (`id`, `type`) VALUES
 (3, 't-hook'),
 (4, 'chairlift');
 
-INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `elevation`, `length`, `type`, `map_name`, `zone`) VALUES
-(13, 'Toppheisen', 2, NULL, NULL, 90, 360, 3, 'b', 1),
-(14, 'Vangsheisen 1', 1, NULL, NULL, 481, 1614, 3, 'c', 1),
-(15, 'Vangsheisen 2', 1, NULL, NULL, 493, 1688, 3, 'd', 1),
-(16, 'Barneheisen', 1, NULL, NULL, 108, 500, 1, 'e', 1),
-(17, 'Båndheis for barn', 1, NULL, NULL, NULL, NULL, 2, 'f', 1),
-(18, 'Vangsliaekspressen', 1, NULL, NULL, 309, 1382, 4, 'g', 1),
-(19, 'Ådalsheisen', 2, NULL, NULL, 315, 1154, 3, 'h', 2),
-(20, 'Håkerxpressen', 1, NULL, NULL, 340, 1340, 4, 'i', 1),
-(21, 'Tverrheisen', 2, NULL, NULL, 129, 1041, 3, 'j', 2),
-(22, 'Hovedenekspressen', 1, NULL, NULL, 534, 1716, 4, 'k', 3),
-(23, 'Hovdenheisen', 2, NULL, NULL, 447, 1547, 3, 'l', 3),
-(24, 'Toppheisen', 2, NULL, NULL, 95, 273, 1, 'm', 3),
-(25, 'Sletvoldheisen', 2, NULL, NULL, 123, 460, 1, 'o', 3),
-(26, 'Barneheis', 1, NULL, NULL, 40, 200, 1, 'p', 4),
-(27, 'Stølen 1', 1, NULL, NULL, 341, 1343, 3, 'r', 4),
-(28, 'Stølen 3', 1, NULL, NULL, 299, 1089, 3, 's', 4),
-(29, 'Fjellheisen', 2, NULL, NULL, 353, 1618, 3, 't', 4);
-
+INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `elevation`, `length`, `type`, `map_name`, `zone`, `panorama_position`) VALUES
+(13, 'Toppheisen', 2, NULL, NULL, 90, 360, 3, 'b', 1, '[0,1]'),
+(14, 'Vangsheisen 1', 1, NULL, NULL, 481, 1614, 3, 'c', 1, '[0,2]'),
+(15, 'Vangsheisen 2', 1, NULL, NULL, 493, 1688, 3, 'd', 1, '[0,3]'),
+(16, 'Barneheisen', 1, NULL, NULL, 108, 500, 1, 'e', 1, '[0,4]'),
+(17, 'Båndheis for barn', 1, NULL, NULL, NULL, NULL, 2, 'f', 1, '[0,5]'),
+(18, 'Vangsliaekspressen', 1, NULL, NULL, 309, 1382, 4, 'g', 1, '[0,6]'),
+(19, 'Ådalsheisen', 2, NULL, NULL, 315, 1154, 3, 'h', 2, '[0,7]'),
+(20, 'Håkerxpressen', 2, NULL, NULL, 340, 1340, 4, 'i', 1, '[0,8]'),
+(21, 'Tverrheisen', 2, NULL, NULL, 129, 1041, 3, 'j', 2, '[0,9]'),
+(22, 'Hovedenekspressen', 1, NULL, NULL, 534, 1716, 4, 'k', 3, '[0,10]'),
+(23, 'Hovdenheisen', 2, NULL, NULL, 447, 1547, 3, 'l', 3, '[0,11]'),
+(24, 'Toppheisen', 2, NULL, NULL, 95, 273, 1, 'm', 3, '[0,12]'),
+(25, 'Sletvoldheisen', 2, NULL, NULL, 123, 460, 1, 'o', 3, '[0,13]'),
+(26, 'Barneheis', 1, NULL, NULL, 40, 200, 1, 'p', 4, '[0,14]'),
+(27, 'Stølen 1', 1, NULL, NULL, 341, 1343, 3, 'r', 4, '[0,15]'),
+(28, 'Stølen 3', 1, NULL, NULL, 299, 1089, 3, 's', 4, '[0,16]'),
+(29, 'Fjellheisen', 2, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]');
+​
 INSERT INTO `status_types` (`id`, `name`) VALUES
 (1, 'open'),
 (2, 'closed'),

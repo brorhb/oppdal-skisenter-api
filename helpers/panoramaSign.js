@@ -7,7 +7,6 @@
 // TODO: Bestemme om det skal det opprettes en connection til server som holdes åpen eller ny for vær pakke som skal sendes?
 // TODO: 
 const net = require('net');
-const { send } = require('process');
 
 // Temp
 const PORT = 10029, HOST = '127.0.0.1';
@@ -30,9 +29,13 @@ const updateSlopes = (data) => {
 }
 
 const updateLifts = (data) => {
+    let arr = [];
+    data.forEach(lift => {
+        if(lift.status == 1) arr.push(67);
+        else arr.push(72);
+    })
     const CMD = 0x32;
-    const dataTest = 0x70;
-    sendPacket(CMD, dataTest);
+    sendPacket(CMD, arr);
 }
 
 const updateAvalancheRed = () => {
@@ -65,7 +68,13 @@ const setAllRelays = (state) => {
 }
 
 const sendPacket = (cmd, data) => {
-    let packet = [STX, cmd, data, CRC, ETX];
+    //let packet = [STX, cmd, data, CRC, ETX];
+    let packet = [STX, cmd];
+    data.forEach(e => {
+        packet.push(e);
+    });
+    packet.push(CRC);
+    packet.push(ETX);
     let hexVal = new Uint8Array(packet);
     console.log(packet);
     let client = new net.Socket();
