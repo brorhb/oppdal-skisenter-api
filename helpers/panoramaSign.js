@@ -31,8 +31,8 @@ const updateSlopes = (data) => {
 const updateLifts = (data) => {
     let arr = [];
     data.forEach(lift => {
-        if(lift.status == 1) arr.push(67);
-        else arr.push(72);
+        if(lift.status == 1) arr.push(103);
+        else arr.push(114);
     })
     const CMD = 0x32;
     sendPacket(CMD, arr);
