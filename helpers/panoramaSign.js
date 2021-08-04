@@ -3,7 +3,6 @@
  * [STX][CMD][data][CRC][ETX]
  */
 
-
 // TODO: Bestemme om det skal det opprettes en connection til server som holdes åpen eller ny for vær pakke som skal sendes?
 // TODO: 
 const net = require('net');
@@ -27,14 +26,54 @@ const updateSlopes = (data) => {
     const testData = 0x6f;
     sendPacket(CMD, testData);
 }
+const ledStates = {
+    "a": 61,
+    "g": 67,
+    "r": 72,
+    1: 67,
+    2: 72,
+    3: 72
+}
+const updateBillboards = () => {
+    return new Promise(async (resolve, reject) => {
+        let lifts = await getDatabaseTable("lifts")
+        let tracks = await getDatabaseTable("tracks")
+        let facilities = await getDatabaseTable("facilities")
 
-const updateLifts = (data) => {
+        var arr = []
+        var items = [...lifts, ...tracks, ...facilities]
+        items.forEach(item => {
+            position = JSON.parse(item["panorama_position"])
+            let status = ledStates[item.status]
+            if (arr[position[0]]) {
+                arr[position[0]][position[1]] = status
+            } else {
+                arr.push([])
+                arr[position[0]][position[1]] = status
+            }
+        })
+        for (var i = 0; i < arr.length; i++) {
+            let clean = []
+            for (var y = 0; y < arr[i].length; y++) {
+                let status = arr[i][y]
+                if (status) clean.push(status)
+                else clean.push(ledStates["a"])
+            }
+            arr[i] = clean
+        }
+        resolve(arr)
+    })
+}
+
+
+const updateLifts = async (data) => {
     /**
      * push 103 og 114 => ingenting skjer
      * push 0x67 og 0x72 => alle blir mørke
      * push 'g' og 'r' 0> ingenting skjer
      * push 0x67 og 0x61  => DETTE FUNKER - 4ern grønn tavla venstre fungerer ikke
      */
+    /*
     let arr = [];
     data.forEach(lift => {
         if(lift.status == 1) arr.push(0x67);
@@ -42,7 +81,11 @@ const updateLifts = (data) => {
     })
     
     const CMD = 0x32;
-    sendPacket(CMD, arr);
+
+    */
+    let arr = await updateBillboards();
+    sendPacket(0x31, arr[0]);
+    sendPacket(0x32, arr[1]);
 }
 
 const updateAvalancheRed = () => {
