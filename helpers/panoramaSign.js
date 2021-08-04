@@ -87,8 +87,8 @@ const updateLifts = async (data) => {
     let arr = await updateBillboards();
     console.log(arr);
     
-    sendPacket(0x31, arr[0]);
-    sendPacket(0x32, arr[1]);
+    await sendPacket(0x31, arr[0]);
+    await sendPacket(0x32, arr[1]);
 }
 
 const updateAvalancheRed = () => {
@@ -121,32 +121,38 @@ const setAllRelays = (state) => {
 }
 
 const sendPacket = (cmd, data) => {
-    //let packet = [STX, cmd, data, CRC, ETX];
-    let packet = [STX, cmd];
-    data.forEach(e => {
-        packet.push(e);
-    });
-    packet.push(CRC);
-    packet.push(ETX);
-    let hexVal = new Uint8Array(packet);
-    let client = new net.Socket();
-    client.connect(PORT, HOST, function() {
-        console.log("Connected to panorama sign. Sending packet ", hexVal);
-        client.write(hexVal);
-    });
-    client.on('data', function(data) {
-        console.log("data type", typeof data)
-        try {console.log("as json string", JSON.stringify(data))} catch {}
-        if (typeof data === Buffer) {
-            console.log("size", data.length)
-        }
-        console.log("Recieved data:", `${data}`);
-        let b = Buffer.from('[object Object]', 'utf8')
-        console.log("buffer as string", b.toString('utf8'))
-        console.log("response ", data);
-        client.destroy();
-        // TODO: check if data is ACK or NACK, and handle accordingly
-    });
+    return new Promise((resolve, reject) => {
+        //let packet = [STX, cmd, data, CRC, ETX];
+        let packet = [STX, cmd];
+        data.forEach(e => {
+            packet.push(e);
+        });
+        packet.push(CRC);
+        packet.push(ETX);
+        let hexVal = new Uint8Array(packet);
+        let client = new net.Socket();
+        client.connect(PORT, HOST, function() {
+            console.log("Connected to panorama sign. Sending packet ", hexVal);
+            client.write(hexVal);
+            client.destroy();
+            resolve()
+        });
+        /*
+        client.on('data', function(data) {
+            console.log("data type", typeof data)
+            try {console.log("as json string", JSON.stringify(data))} catch {}
+            if (typeof data === Buffer) {
+                console.log("size", data.length)
+            }
+            console.log("Recieved data:", `${data}`);
+            let b = Buffer.from('[object Object]', 'utf8')
+            console.log("buffer as string", b.toString('utf8'))
+            console.log("response ", data);
+            resolve()
+            // TODO: check if data is ACK or NACK, and handle accordingly
+        });
+        */
+    })
 }
 
 function testPanoramaSign() {
