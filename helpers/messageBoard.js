@@ -4,22 +4,24 @@
  */
 
 const net = require('net');
+const PORT = 10029, HOST = '127.0.0.1';
 
 const STX = 0x02, CRC = 0x00, ETX = 0x04, ACK = 0x06, NACK = 0x15;
 
 
-const setTextBuffer = (line, time, characterSet, text) => {
-    let cmd, par2;
-    let par1 = time.toString(16);
-    let par3 = 0x07; //Fixed
-
-    if(line >= 1 && line <= 10) cmd = line.toString(16);
-    else return;
-
-    if(characterSet >= 1 && characterSet <= 3) par2 = characterSet.toString(16);
-    else return;
+const setTextBuffer = (message) => {
     
-    sendPacket(cmd, par1, par2, par3, text);
+    const cmd = 0x06;
+    const time = 0x14;
+    const char = 0x02;
+    const fixed = 0x07;
+    let arr = [cmd, time, char, fixed];
+    for(let i = 0; i < message.length; i++){
+        arr.push(message.charCodeAt(i).toString(16));
+    }
+    arr.push(CRC);
+    arr.push(ETX);
+    sendPacket(arr);
 }
 
 const setBrightness = (brightness) => {
@@ -41,16 +43,16 @@ const setTime = (time) => {
 
 
 
-const sendPacket = (cmd, par1, par2, par3, data) => {
-    let packet = [STX, cmd, par1, par2, par3, data, CRC, ETX];
-
+const sendPacket = (packet) => {
+    let hexVal = new Uint8Array(packet);
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
-        console.log("Connected to panorama sign. Sending packet ", packet);
-        client.write(packet);
+        console.log("Connected to panorama sign. Sending packet ", hexVal);
+        client.write(hexVal);
     });
     client.on('data', function(data) {
         client.destroy();
         // TODO: check if data is ACK or NACK and handle accordingly
     });
 }
+module.exports = {setTextBuffer}

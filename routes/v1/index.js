@@ -2,6 +2,7 @@ const connection = require("../../connection")
 const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
 const panoramaSign = require('../../helpers/panoramaSign')
+const messageBoard = require('../../helpers/messageBoard')
 var weatherCache
 var avalancheCache
 var rainCache
@@ -259,6 +260,10 @@ module.exports = function (fastify, opts, done) {
   fastify.get("/testslopes", async () => {
     panoramaSign.updateSlopes("test");
     console.log("/testslopes")
+  })
+  fastify.get("/testmessage", async () => {
+    console.log("/testmessage");
+    messageBoard.setTextBuffer("Dette er en melding som skal vises på tavle")
   })
   done()
 }
