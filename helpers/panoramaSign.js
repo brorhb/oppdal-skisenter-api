@@ -138,7 +138,8 @@ const sendPacket = (cmd, data) => {
         let client = new net.Socket();
         client.connect(PORT, HOST, function() {
             console.log("Connected to panorama sign. Sending packet ", hexVal);
-            client.write(hexVal);            
+            client.write(hexVal);    
+            client.end();        
         });
         client.on('data', function(data) {
             console.log("data type", typeof data)
@@ -156,7 +157,7 @@ const sendPacket = (cmd, data) => {
         });
         client.on('error', function(error) {
             console.log("error from client", error);
-            client.end();
+            client.destroy();
             reject(error);
         })
     })
