@@ -42,7 +42,7 @@ const updateBillboards = () => {
         let facilities = await getDataFromTable("facilities")
 
         var arr = []
-        var items = [...lifts, ...tracks, ...facilities]
+        var items = [...lifts, ...tracks]
         items.forEach(item => {
             position = JSON.parse(item["panorama_position"])
             let status = ledStates[item.status]
@@ -85,6 +85,8 @@ const updateLifts = async (data) => {
 
     */
     let arr = await updateBillboards();
+    console.log(arr);
+    
     sendPacket(0x31, arr[0]);
     sendPacket(0x32, arr[1]);
 }

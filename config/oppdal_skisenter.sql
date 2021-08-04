@@ -1,10 +1,10 @@
 -- -------------------------------------------------------------
--- TablePlus 4.0.0(370)
+-- TablePlus 4.0.2(374)
 --
 -- https://tableplus.com/
 --
--- Database: oppdal_skisenter
--- Generation Time: 2021-06-15 16:35:44.5480
+-- Database: heroku_a02421771039358
+-- Generation Time: 2021-08-04 13:45:17.3220
 -- -------------------------------------------------------------
 
 
@@ -17,6 +17,15 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+DROP TABLE IF EXISTS `alert`;
+CREATE TABLE `alert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `is_live` tinyint(1) DEFAULT NULL,
+  `timestamp` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `avalanche_levels`;
 CREATE TABLE `avalanche_levels` (
@@ -47,7 +56,7 @@ CREATE TABLE `camera` (
   PRIMARY KEY (`id`),
   KEY `zone` (`zone`),
   CONSTRAINT `camera_ibfk_1` FOREIGN KEY (`zone`) REFERENCES `zones` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `difficulty`;
 CREATE TABLE `difficulty` (
@@ -63,20 +72,21 @@ CREATE TABLE `facilities` (
   `type` int(11) NOT NULL,
   `status` int(11) DEFAULT '2',
   `zone` int(11) DEFAULT NULL,
+  `panorama_position` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `type` (`type`),
   KEY `status` (`status`),
   CONSTRAINT `facilities_ibfk_1` FOREIGN KEY (`type`) REFERENCES `facilities_types` (`id`),
   CONSTRAINT `facilities_ibfk_2` FOREIGN KEY (`status`) REFERENCES `status_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `facilities_types`;
 CREATE TABLE `facilities_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `feature_types`;
 CREATE TABLE `feature_types` (
@@ -125,23 +135,35 @@ CREATE TABLE `lift_type` (
 
 DROP TABLE IF EXISTS `lifts`;
 CREATE TABLE `lifts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `status` int DEFAULT '2',
+  `status` int(11) DEFAULT '2',
   `start_position` float DEFAULT NULL,
   `end_position` float DEFAULT NULL,
-  `elevation` int DEFAULT NULL,
-  `length` int DEFAULT NULL,
-  `type` int NOT NULL,
+  `elevation` int(11) DEFAULT NULL,
+  `length` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
   `map_name` varchar(255) NOT NULL,
-  `zone` int DEFAULT NULL,
-  `panorama_position` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `zone` int(11) DEFAULT NULL,
+  `panorama_position` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `status` (`status`),
   CONSTRAINT `lifts_ibfk_1` FOREIGN KEY (`type`) REFERENCES `lift_type` (`id`),
   CONSTRAINT `lifts_ibfk_2` FOREIGN KEY (`status`) REFERENCES `status_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `snow_conditions`;
+CREATE TABLE `snow_conditions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `is_live` tinyint(1) DEFAULT NULL,
+  `timestamp` date DEFAULT NULL,
+  `zone_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `zone_id` (`zone_id`),
+  CONSTRAINT `zone_ibfk_1` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `status_types`;
 CREATE TABLE `status_types` (
@@ -172,6 +194,7 @@ CREATE TABLE `tracks` (
   `difficulty` int(11) NOT NULL,
   `lifts` varchar(255) DEFAULT NULL,
   `zone` int(11) DEFAULT NULL,
+  `panorama_position` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `difficulty` (`difficulty`),
   KEY `status` (`status`),
@@ -179,7 +202,7 @@ CREATE TABLE `tracks` (
   CONSTRAINT `tracks_ibfk_1` FOREIGN KEY (`difficulty`) REFERENCES `difficulty` (`id`),
   CONSTRAINT `tracks_ibfk_2` FOREIGN KEY (`status`) REFERENCES `status_types` (`id`),
   CONSTRAINT `tracks_ibfk_3` FOREIGN KEY (`zone`) REFERENCES `zones` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE `user_roles` (
@@ -221,26 +244,12 @@ CREATE TABLE `zones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `alert`;
-CREATE TABLE `alert` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` varchar(255) NOT NULL,
-  `is_live` boolean,
-  `timestamp` date DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `snow_conditions`;
-CREATE TABLE `snow_conditions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` varchar(255) NOT NULL,
-  `is_live` boolean,
-  `timestamp` date DEFAULT NULL,
-  `zone_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `zone_id` (`zone_id`),
-  CONSTRAINT `zone_ibfk_1` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `alert` (`id`, `message`, `is_live`, `timestamp`) VALUES
+(1, 'Vangslia stengt grunnet vind.', 0, '2021-06-09'),
+(2, 'Hovden stengt grunnet vind', 1, '2021-07-04'),
+(11, 'Håkerexpressen er stengt grunnet vind', 0, '2021-07-04'),
+(21, 'En ny melding', 0, '2021-06-09'),
+(31, 'Veldig nice', 0, '2021-07-03');
 
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (1, 'none'),
@@ -264,12 +273,29 @@ INSERT INTO `difficulty` (`id`, `label`) VALUES
 (6, 'not rated'),
 (7, 'terrainpark');
 
+INSERT INTO `facilities` (`id`, `name`, `type`, `status`, `zone`, `panorama_position`) VALUES
+(1, 'Vangslia Kro', 2, 1, NULL, NULL),
+(11, 'Topp resturanten', 2, 1, NULL, NULL),
+(21, 'Rockoss', 2, 1, NULL, NULL),
+(31, 'Gråberget', 2, 1, NULL, NULL),
+(41, 'Carving cafe', 2, 1, NULL, NULL),
+(71, 'Aurhøa', 6, 1, NULL, NULL),
+(81, 'Ådalen', 6, 1, NULL, NULL),
+(91, 'Vangslia - Skiutleie', 4, 1, NULL, NULL),
+(101, 'Hovden - Skiutleie', 4, 1, NULL, NULL),
+(111, 'Stølen - Skiutleie', 4, 1, NULL, NULL),
+(121, 'Loftet afterski', 7, 1, NULL, NULL),
+(131, 'Låven afterski', 7, 1, NULL, NULL),
+(141, 'Rockoss', 7, 1, NULL, NULL);
+
 INSERT INTO `facilities_types` (`id`, `name`) VALUES
 (1, 'toilet'),
 (2, 'cafe'),
 (3, 'workshop'),
 (4, 'rental'),
-(5, 'shop');
+(5, 'shop'),
+(6, 'warming'),
+(7, 'afterski');
 
 INSERT INTO `feature_types` (`id`, `name`) VALUES
 (1, 'jump'),
@@ -306,23 +332,33 @@ INSERT INTO `lift_type` (`id`, `type`) VALUES
 
 INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `elevation`, `length`, `type`, `map_name`, `zone`, `panorama_position`) VALUES
 (13, 'Toppheisen', 2, NULL, NULL, 90, 360, 3, 'b', 1, '[0,1]'),
-(14, 'Vangsheisen 1', 1, NULL, NULL, 481, 1614, 3, 'c', 1, '[0,2]'),
-(15, 'Vangsheisen 2', 1, NULL, NULL, 493, 1688, 3, 'd', 1, '[0,3]'),
-(16, 'Barneheisen', 1, NULL, NULL, 108, 500, 1, 'e', 1, '[0,4]'),
-(17, 'Båndheis for barn', 1, NULL, NULL, NULL, NULL, 2, 'f', 1, '[0,5]'),
-(18, 'Vangsliaekspressen', 1, NULL, NULL, 309, 1382, 4, 'g', 1, '[0,6]'),
-(19, 'Ådalsheisen', 2, NULL, NULL, 315, 1154, 3, 'h', 2, '[0,7]'),
+(14, 'Vangsheisen 1', 2, NULL, NULL, 481, 1614, 3, 'c', 1, '[0,2]'),
+(15, 'Vangsheisen 2', 2, NULL, NULL, 493, 1688, 3, 'd', 1, '[0,3]'),
+(16, 'Barneheisen', 2, NULL, NULL, 108, 500, 1, 'e', 1, '[0,4]'),
+(17, 'Båndheis for barn', 2, NULL, NULL, NULL, NULL, 2, 'f', 1, '[0,5]'),
+(18, 'Vangsliaekspressen', 2, NULL, NULL, 309, 1382, 4, 'g', 1, '[0,6]'),
+(19, 'Ådalsheisen', 1, NULL, NULL, 315, 1154, 3, 'h', 2, '[0,7]'),
 (20, 'Håkerxpressen', 2, NULL, NULL, 340, 1340, 4, 'i', 1, '[0,8]'),
 (21, 'Tverrheisen', 2, NULL, NULL, 129, 1041, 3, 'j', 2, '[0,9]'),
-(22, 'Hovedenekspressen', 1, NULL, NULL, 534, 1716, 4, 'k', 3, '[0,10]'),
+(22, 'Hovedenekspressen', 2, NULL, NULL, 534, 1716, 4, 'k', 3, '[0,10]'),
 (23, 'Hovdenheisen', 2, NULL, NULL, 447, 1547, 3, 'l', 3, '[0,11]'),
 (24, 'Toppheisen', 2, NULL, NULL, 95, 273, 1, 'm', 3, '[0,12]'),
 (25, 'Sletvoldheisen', 2, NULL, NULL, 123, 460, 1, 'o', 3, '[0,13]'),
 (26, 'Barneheis', 1, NULL, NULL, 40, 200, 1, 'p', 4, '[0,14]'),
 (27, 'Stølen 1', 1, NULL, NULL, 341, 1343, 3, 'r', 4, '[0,15]'),
 (28, 'Stølen 3', 1, NULL, NULL, 299, 1089, 3, 's', 4, '[0,16]'),
-(29, 'Fjellheisen', 2, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]');
-​
+(29, 'Fjellheisen', 1, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]'),
+(30, 'Ny heis', 2, NULL, NULL, 500, 2000, 4, '', 3, NULL);
+
+INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`, `zone_id`) VALUES
+(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2020-12-03', 4),
+(2, 'Svært gode forhold i Vangslia i dag.', 1, '2020-12-03', 1),
+(3, 'Svært gode forhold i Hovden i dag.', 0, '2020-12-03', 3),
+(11, 'Test', 0, '2021-06-09', 1),
+(21, 'Gode forhold i løypene i dag. ', 0, '2021-07-03', 1),
+(31, 'Veldig nice', 0, '2021-07-03', 1),
+(41, 'Test', 0, '2021-07-04', 11);
+
 INSERT INTO `status_types` (`id`, `name`) VALUES
 (1, 'open'),
 (2, 'closed'),
@@ -369,46 +405,47 @@ INSERT INTO `track_coord_in_map` (`id`, `coord`, `track`) VALUES
 (381, '860,271', 46),
 (391, '293,275', 20);
 
-INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `length`, `difficulty`, `lifts`, `zone`) VALUES
-(1, 'Danskeløypa', '[1,3]', 2, 2, 1500, 2, '[20]', 1),
-(3, 'Pomaløypa', '[]', 2, 2, 1200, 2, '[20,4,14,15]', 1),
-(4, 'Midtløypa', '[]', 2, 2, 1400, 2, '[]', 1),
-(5, 'Utforløypa', '[6]', 2, 2, 1600, 3, '[18]', 1),
-(6, 'Solheisløypa', '[]', 2, 2, 1500, 1, '[18]', 1),
-(7, 'Minipark', NULL, NULL, 2, 1700, 7, '[18]', 1),
-(8, 'Henget', '[]', NULL, 2, 700, 4, '[]', 1),
-(9, 'Solsvingen', NULL, NULL, 2, 2900, 1, NULL, 1),
-(10, 'Barneland', '[]', 2, 2, 500, 1, '[]', 1),
-(11, 'Tverrløypa', NULL, NULL, 2, 1500, 1, NULL, 1),
-(12, 'Vesthenget', NULL, NULL, 2, 700, 4, NULL, 1),
-(13, 'Lysløypa', '[]', 2, 2, 500, 2, '[]', 1),
-(14, 'Vesttoppen', NULL, NULL, 2, 400, 6, NULL, 1),
-(15, 'Fjellsida', '[]', NULL, 2, 2100, 2, '[]', 11),
-(16, 'Toppløypa', NULL, NULL, 2, 400, 3, NULL, 1),
-(17, 'Håkerløypa', '[]', NULL, 2, 1500, 2, '[20]', 1),
-(20, 'Park', '[5]', 2, 2, 1500, 7, '[18]', 1),
-(21, 'Bjørndalsløypa', NULL, NULL, 2, 1900, 4, NULL, 3),
-(22, 'Høgerhenget', NULL, NULL, 2, 600, 4, NULL, 3),
-(23, 'Bjerkeløypa', NULL, NULL, 2, 1900, 6, NULL, 3),
-(24, 'Storstugguløypa', NULL, NULL, 2, 1500, 6, NULL, 3),
-(25, 'Bualøypa', NULL, NULL, 2, 2600, 2, NULL, 11),
-(26, 'Baksida', NULL, NULL, 2, 1500, 2, NULL, 3),
-(28, 'Slettvoldløypa', NULL, NULL, 2, 600, 3, NULL, 3),
-(31, 'Håmmårløypa', NULL, NULL, 2, 3100, 2, NULL, 11),
-(32, 'Jonasløypa', NULL, NULL, 2, 1300, 2, NULL, 4),
-(33, 'World cup løypa', '[]', NULL, 2, 1100, 3, '[]', 4),
-(34, 'Ekkerenget', NULL, NULL, 2, 1500, 3, NULL, 4),
-(35, 'Ormhaugen', NULL, NULL, 2, 2600, 1, NULL, 11),
-(36, 'Parallellen', NULL, NULL, 2, 1800, 2, NULL, 4),
-(37, 'Storsleppet', NULL, NULL, 2, 1800, 1, NULL, 4),
-(38, 'Skogsløypa', NULL, NULL, 2, 500, 6, NULL, 4),
-(39, 'Trolland', '[]', NULL, 2, 300, 1, '[]', 4),
-(41, 'Presten', NULL, NULL, 2, 1200, 3, NULL, 2),
-(42, 'Ådalsløypa', NULL, NULL, 2, 2300, 2, NULL, 2),
-(43, 'Transporten', NULL, NULL, 2, 2000, 1, NULL, 11),
-(44, 'Hovdensvingen', NULL, NULL, 2, 2200, 1, NULL, 11),
-(45, 'Elvekanten', NULL, NULL, 2, 900, 2, NULL, 11),
-(46, 'Gråbergløypa', NULL, NULL, 2, 1600, 1, NULL, NULL);
+INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `length`, `difficulty`, `lifts`, `zone`, `panorama_position`) VALUES
+(1, 'Danskeløypa', '[1,3]', 2, 2, 1500, 2, '[20]', 1, '[1,0]'),
+(3, 'Pomaløypa', '[]', 2, 2, 1200, 2, '[20,4,14,15]', 1, '[1,1]'),
+(4, 'Midtløypa', '[]', 2, 2, 1400, 2, '[]', 1, '[1,2]'),
+(5, 'Utforløypa', '[6]', 2, 2, 1600, 3, '[18]', 1, '[1,3]'),
+(6, 'Solheisløypa', '[]', 2, 2, 1500, 1, '[18]', 1, '[1,4]'),
+(7, 'Minipark', NULL, NULL, 2, 1700, 7, '[18]', 1, '[1,5]'),
+(8, 'Henget', '[]', NULL, 2, 700, 4, '[]', 1, '[1,6]'),
+(9, 'Solsvingen', NULL, NULL, 2, 2900, 1, NULL, 1, '[1,7]'),
+(10, 'Barneland', '[]', 2, 2, 500, 1, '[]', 1, '[1,8]'),
+(11, 'Tverrløypa', NULL, NULL, 2, 1500, 1, NULL, 1, '[1,9]'),
+(12, 'Vesthenget', NULL, NULL, 2, 700, 4, NULL, 1, '[1,10]'),
+(13, 'Lysløypa', '[]', 2, 2, 500, 2, '[]', 1, '[1,11]'),
+(14, 'Vesttoppen', NULL, NULL, 2, 400, 6, NULL, 1, '[1,12]'),
+(15, 'Fjellsida', '[]', NULL, 1, 2100, 2, '[]', 11, '[1,13]'),
+(16, 'Toppløypa', NULL, NULL, 2, 400, 3, NULL, 1, '[1,14]'),
+(17, 'Håkerløypa', '[]', NULL, 2, 1500, 2, '[20]', 1, '[1,15]'),
+(20, 'Park', '[5]', 2, 2, 1500, 7, '[18]', 1, '[1,16]'),
+(21, 'Bjørndalsløypa', NULL, NULL, 1, 1900, 4, NULL, 3, '[1,17]'),
+(22, 'Høgerhenget', NULL, NULL, 1, 600, 4, NULL, 3, '[1,18]'),
+(23, 'Bjerkeløypa', NULL, NULL, 1, 1900, 6, NULL, 3, '[1,19]'),
+(24, 'Storstugguløypa', NULL, NULL, 1, 1500, 6, NULL, 3, '[1,20]'),
+(25, 'Bualøypa', NULL, NULL, 1, 2600, 2, NULL, 11, '[1,21]'),
+(26, 'Baksida', NULL, NULL, 1, 1500, 2, NULL, 3, '[1,22]'),
+(28, 'Slettvoldløypa', NULL, NULL, 1, 600, 3, NULL, 3, '[1,23]'),
+(31, 'Håmmårløypa', NULL, NULL, 1, 3100, 2, NULL, 11, '[1,24]'),
+(32, 'Jonasløypa', NULL, NULL, 1, 1300, 2, NULL, 4, '[1,25]'),
+(33, 'World cup løypa', '[]', NULL, 1, 1100, 3, '[]', 4, '[1,26]'),
+(34, 'Ekkerenget', NULL, NULL, 1, 1500, 3, NULL, 4, '[1,27]'),
+(35, 'Ormhaugen', NULL, NULL, 1, 2600, 1, NULL, 11, '[1,28]'),
+(36, 'Parallellen', NULL, NULL, 1, 1800, 2, NULL, 4, '[1,29]'),
+(37, 'Storsleppet', NULL, NULL, 1, 1800, 1, NULL, 4, '[1,30]'),
+(38, 'Skogsløypa', NULL, NULL, 1, 500, 6, NULL, 4, '[1,31]'),
+(39, 'Trolland', '[]', NULL, 1, 300, 1, '[]', 4, '[1,32]'),
+(41, 'Presten', NULL, NULL, 1, 1200, 3, NULL, 2, '[1,33]'),
+(42, 'Ådalsløypa', NULL, NULL, 1, 2300, 2, NULL, 2, '[1,34]'),
+(43, 'Transporten', NULL, NULL, 1, 2000, 1, NULL, 11, '[1,35]'),
+(44, 'Hovdensvingen', NULL, NULL, 1, 2200, 1, NULL, 11, '[1,36]'),
+(45, 'Elvekanten', NULL, NULL, 1, 900, 2, NULL, 11, '[1,37]'),
+(46, 'Gråbergløypa', NULL, NULL, 1, 1600, 1, NULL, NULL, '[1,38]'),
+(47, 'Ny nedfart', '[4,5]', 2, 2, 4, 4, '[18]', 1, '[1,39]');
 
 INSERT INTO `user_roles` (`id`, `type`) VALUES
 (1, 'admin');
@@ -432,14 +469,6 @@ INSERT INTO `zones` (`id`, `name`) VALUES
 (4, 'Stølen'),
 (11, 'Transport');
 
-INSERT INTO `alert`(`id`, `message`, `is_live`, `timestamp`) VALUES 
-(1, 'Vangslia stengt grunnet vind.', true, '2020-12-03'),
-(2, 'Hovden stengt grunnet vind', true, '2021-12-03');
-
-INSERT into `snow_conditions` (`id`, `message`, `is_live`, `timestamp`, `zone_id`) VALUES
-(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', true, '2020-12-03', 4),
-(2, 'Svært gode forhold i Vangslia i dag.', true, '2020-12-03', 1),
-(3, 'Svært gode forhold i Hovden i dag.', false, '2020-12-03', 3);
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
