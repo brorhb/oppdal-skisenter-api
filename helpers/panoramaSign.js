@@ -33,11 +33,12 @@ const updateLifts = (data) => {
      * push 103 og 114 => ingenting skjer
      * push 0x67 og 0x72 => alle blir mørke
      * push 'g' og 'r' 0> ingenting skjer
+     * push 0x67 og 0x61  => DETTE FUNKER - 4ern grønn tavla venstre fungerer ikke
      */
     let arr = [];
     data.forEach(lift => {
         if(lift.status == 1) arr.push(0x67);
-        else arr.push(0x61);
+        else arr.push(0x72);
     })
     
     const CMD = 0x32;
