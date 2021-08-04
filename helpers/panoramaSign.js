@@ -137,10 +137,16 @@ const sendPacket = (cmd, data) => {
         let hexVal = new Uint8Array(packet);
         let client = new net.Socket();
         client.connect(PORT, HOST, function() {
-            console.log("Connected to panorama sign. Sending packet ", hexVal);
-            client.write(hexVal);    
-            client.end();        
+            console.log("Connected to panorama sign. Sending packet ", hexVal);    
+            //client.end();
         });
+        client.on("ready", (data) => {
+            console.log("ready", data)
+            client.write(hexVal);
+        })
+        client.on("connect", function(data) {
+            console.log("connecting", data)
+        })
         client.on('data', function(data) {
             console.log("data type", typeof data)
             try {console.log("as json string", JSON.stringify(data))} catch {}
@@ -152,7 +158,7 @@ const sendPacket = (cmd, data) => {
             console.log("buffer as string", b.toString('utf8'))
             console.log("response ", data);
             // TODO: check if data is ACK or NACK, and handle accordingly
-            client.end();
+            client.destroy();
             resolve();
         });
         client.on('error', function(error) {
