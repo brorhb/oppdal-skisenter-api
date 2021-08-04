@@ -29,11 +29,17 @@ const updateSlopes = (data) => {
 }
 
 const updateLifts = (data) => {
+    /**
+     * push 103 og 114 => ingenting skjer
+     * push 0x67 og 0x72 => alle blir mørke
+     * 
+     */
     let arr = [];
     data.forEach(lift => {
-        if(lift.status == 1) arr.push(103);
-        else arr.push(114);
+        if(lift.status == 1) arr.push('g');
+        else arr.push('r');
     })
+    
     const CMD = 0x32;
     sendPacket(CMD, arr);
 }
@@ -76,7 +82,6 @@ const sendPacket = (cmd, data) => {
     packet.push(CRC);
     packet.push(ETX);
     let hexVal = new Uint8Array(packet);
-    console.log(packet);
     let client = new net.Socket();
     client.connect(PORT, HOST, function() {
         console.log("Connected to panorama sign. Sending packet ", hexVal);
@@ -91,6 +96,7 @@ const sendPacket = (cmd, data) => {
         console.log("Recieved data:", `${data}`);
         let b = Buffer.from('[object Object]', 'utf8')
         console.log("buffer as string", b.toString('utf8'))
+        console.log("response ", data);
         client.destroy();
         // TODO: check if data is ACK or NACK, and handle accordingly
     });
