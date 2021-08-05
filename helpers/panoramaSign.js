@@ -143,7 +143,7 @@ const sendPacket = (cmd, data) => {
         client.on("ready", (data) => {
             console.log("ready", data)
             client.write(hexVal);
-            client.end()
+            //client.end()
         })
         client.on("connect", function(data) {
             console.log("connecting", data)
