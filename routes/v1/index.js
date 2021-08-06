@@ -1,8 +1,6 @@
 const connection = require("../../connection")
 const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
-const panoramaSign = require('../../helpers/panoramaSign')
-const messageBoard = require('../../helpers/messageBoard')
 var weatherCache
 var avalancheCache
 var rainCache
@@ -241,29 +239,6 @@ module.exports = function (fastify, opts, done) {
       if(!item.is_live) return false;
       return true;
     })
-  })
-
-  fastify.get("/turnoff", async () => {
-    panoramaSign.updateAvalancheRed();
-    console.log("/turnoff")
-  });
-
-  fastify.get("/turnon", async () => {
-    panoramaSign.updateAvalancheGreen();
-    console.log("/turnon")
-  })
-  fastify.get("/testlifts", async () => {
-    let lifts = await getDataFromTable("lifts")
-    panoramaSign.updateLifts(lifts);
-    console.log("/testlifts")
-  })
-  fastify.get("/testslopes", async () => {
-    panoramaSign.updateSlopes("test");
-    console.log("/testslopes")
-  })
-  fastify.get("/testmessage", async () => {
-    console.log("/testmessage");
-    messageBoard.setTextBuffer("Dette er en melding som skal vises på tavle")
   })
   done()
 }

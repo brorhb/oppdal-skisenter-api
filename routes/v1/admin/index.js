@@ -32,6 +32,7 @@ module.exports = function (fastify, opts, done) {
   fastify.register(require('./alert'), { prefix: '/alert' })
   fastify.register(require('./camera'), { prefix: '/camera' })
   fastify.register(require('./snowConditions'), { prefix: '/snow-conditions'})
+  fastify.register(require('./panoramasign'), { prefix: '/panoramasign'})
   /*fastify.post("/create", async (req, res) => {
     const hash = await new Promise((resolve, reject) => {
       bcrypt.hash(req.body.password, 10, function(err, hash) {
