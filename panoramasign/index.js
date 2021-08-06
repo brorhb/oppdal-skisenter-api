@@ -13,7 +13,7 @@ fastify.route({
             let telegrams = await panoramaSign.relaysTelegramConstructor(items);
             let results = [];
             for(let i = 0; i < telegrams.length; i++) {
-                let result = await panoramaSign.updatePanoramaSign(telegram[i]);
+                let result = await panoramaSign.updatePanoramaSign(telegrams[i]);
                 results.push(result)
             }
             return {
