@@ -158,11 +158,8 @@ CREATE TABLE `snow_conditions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) NOT NULL,
   `is_live` tinyint(1) DEFAULT NULL,
-  `timestamp` date DEFAULT NULL,
-  `zone_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `zone_id` (`zone_id`),
-  CONSTRAINT `zone_ibfk_1` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`)
+  `timestamp` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `status_types`;
@@ -348,14 +345,14 @@ INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `
 (29, 'Fjellheisen', 1, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]'),
 (30, 'Ny heis', 2, NULL, NULL, 500, 2000, 4, '', 3, NULL);
 
-INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`, `zone_id`) VALUES
-(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2020-12-03', 4),
-(2, 'Svært gode forhold i Vangslia i dag.', 1, '2020-12-03', 1),
-(3, 'Svært gode forhold i Hovden i dag.', 0, '2020-12-03', 3),
-(11, 'Test', 0, '2021-06-09', 1),
-(21, 'Gode forhold i løypene i dag. ', 0, '2021-07-03', 1),
-(31, 'Veldig nice', 0, '2021-07-03', 1),
-(41, 'Test', 0, '2021-07-04', 11);
+INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`) VALUES
+(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2021-08-06T13:31:00Z'),
+(2, 'Svært gode forhold i Vangslia i dag.', 1, '2021-08-06T13:31:00Z'),
+(3, 'Svært gode forhold i Hovden i dag.', 0, '2021-08-06T13:31:00Z'),
+(11, 'Test', 0, '2021-08-07T13:31:00Z'),
+(21, 'Gode forhold i løypene i dag. ', 0, '2021-08-07T13:31:00Z'),
+(31, 'Veldig nice', 0, '2021-08-08T13:31:00Z'),
+(41, 'Test', 0, '2021-08-09T13:00:00Z');
 
 INSERT INTO `status_types` (`id`, `name`) VALUES
 (1, 'open'),

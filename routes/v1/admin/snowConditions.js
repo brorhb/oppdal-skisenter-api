@@ -30,13 +30,13 @@ module.exports = function(fastify, opts, done) {
         preValidation: authMiddleware,
         url: "/",
         handler: async (req, res) => {
-            const {message, zone_id} = req.body;
+            const {message} = req.body;
             try {
                 const result = await new Promise((resolve, reject) => {
                     connection.query(`
-                    INSERT INTO snow_conditions (message, is_live, timestamp, zone_id)
-                    VALUES (?, ?, ?, ?);
-                    `, [message, 0, createDate(), zone_id], (error, result) => {
+                    INSERT INTO snow_conditions (message, is_live, timestamp)
+                    VALUES (?, ?, ?);
+                    `, [message, 0, createDate()], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     });
@@ -116,10 +116,15 @@ module.exports = function(fastify, opts, done) {
 }
 
 function createDate() {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth()
-    let day = `${today.getDate()}`
-    if (day.length < 2) day = `0${day}`
-    return `${year}-${month}-${day}`
-}
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+    let time = today.getHours();
+    let min = today.getMinutes();
+    if (month < 10) month = `0${month}`;
+    if (day < 10) day = `0${day}`;
+    if (time < 10) time = `0${time}`;
+    if (min < 10) min = `0${min}`;
+    return `${year}-${month}-${day}T${time}:${min}:00Z`
+};
