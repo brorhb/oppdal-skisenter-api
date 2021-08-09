@@ -2,6 +2,25 @@ const connection = require("../../../connection")
 const authMiddleware = require("../../../helpers/authMiddleware")
 
 module.exports = function(fastify, opts, done) {
+    // Added GET route for admin - only administrator can get "non-live" alerts
+    fastify.route({
+        method: "GET",
+        preValidation: authMiddleware,
+        url: "/",
+        handler: async (req, res) => {
+            try {
+                const result = await new Promise((resolve, reject) => {
+                    connection.query('SELECT * FROM alert;', (error, result) => {
+                        if (error) reject(error);
+                        resolve(result);
+                    });
+                });
+                return result;
+            } catch (error) {
+                return error;
+            }
+        }
+    });
     fastify.route({
         method: "POST",
         preValidation: authMiddleware,

@@ -1,6 +1,7 @@
 const connection = require("../../connection")
 const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
+const getAlerts = require('../../helpers/getAlerts');
 var weatherCache
 var avalancheCache
 var rainCache
@@ -228,9 +229,8 @@ module.exports = function (fastify, opts, done) {
   })
 
   fastify.get("/alert", async () => {
-    let messages = await getDataFromTable("alert")
-    // Fetch last 20  messages
-    return messages.slice(Math.max(messages.length - 20, 0));
+    let messages = await getAlerts();
+    return messages;
   })
 
   fastify.get("/snow-conditions", async () => {

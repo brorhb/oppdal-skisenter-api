@@ -247,9 +247,7 @@ CREATE TABLE `zones` (
 INSERT INTO `alert` (`id`, `message`, `is_live`, `timestamp`) VALUES
 (1, 'Vangslia stengt grunnet vind.', 0, '2021-06-09'),
 (2, 'Hovden stengt grunnet vind', 1, '2021-07-04'),
-(11, 'Håkerexpressen er stengt grunnet vind', 0, '2021-07-04'),
-(21, 'En ny melding', 0, '2021-06-09'),
-(31, 'Veldig nice', 0, '2021-07-03');
+(11, 'Håkerexpressen er stengt grunnet vind', 0, '2021-07-04');
 
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (1, 'none'),
