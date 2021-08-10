@@ -31,8 +31,8 @@ module.exports = function(fastify, opts, done) {
                 const result = await new Promise((resolve, reject) => {
                     connection.query(`
                     INSERT INTO alert (message, is_live, timestamp)
-                    VALUES (?, ?, ?);
-                    `, [message, 1, createDate()], (error, result) => {
+                    VALUES (?, ?, DEFAULT);
+                    `, [message, 1], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     });
@@ -66,9 +66,9 @@ module.exports = function(fastify, opts, done) {
                     SET
                         message = ?,
                         is_live = ?,
-                        timestamp = ?
+                        timestamp = DEFAULT
                     WHERE id = '${id}';
-                    `, [message.message, message.is_live ? 1 : 0, createDate()], (error, result) => {
+                    `, [message.message, message.is_live ? 1 : 0], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     })
@@ -110,13 +110,4 @@ module.exports = function(fastify, opts, done) {
         }
     })
     done();
-}
-
-function createDate() {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth()
-    let day = `${today.getDate()}`
-    if (day.length < 2) day = `0${day}`
-    return `${year}-${month}-${day}`
 }

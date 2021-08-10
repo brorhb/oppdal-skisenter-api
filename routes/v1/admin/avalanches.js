@@ -18,9 +18,9 @@ module.exports = function (fastify, opts, done) {
             avalanche_log
           SET
             level = ?,
-            timestamp = ?
+            timestamp = DEFAULT
           WHERE id = ?;
-          `, [avalanche.name, Date.now(), avalancheId], (error, result) => {
+          `, [avalanche.name, avalancheId], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })
@@ -51,8 +51,8 @@ module.exports = function (fastify, opts, done) {
           connection.query(`
           INSERT INTO
             avalanche_log (id, level, timestamp)
-          VALUES (?, ?, ?);
-          `, [newId, avalanche.level, Date.now()], (error, result) => {
+          VALUES (?, ?, DEFAULT);
+          `, [newId, avalanche.level], (error, result) => {
             if (error) reject(error)
             resolve(result)
           })

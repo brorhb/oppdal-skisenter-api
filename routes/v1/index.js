@@ -7,7 +7,7 @@ var avalancheCache
 var rainCache
 
 module.exports = function (fastify, opts, done) {
-
+  
   fastify.register(require('./admin'), { prefix: '/admin' })
 
   fastify.get("/tracks", async () => {
@@ -254,9 +254,9 @@ function createDatesForAvalancheWarning() {
   dates.push(formatDate(date));
 
   // TEMP DATES FOR BRUKERTEST
-  let tempDates = ["2020-12-21", "2020-12-27"]
-  return tempDates
-  //return dates;
+  /*let tempDates = ["2020-12-21", "2020-12-27"]
+  return tempDates*/
+  return dates;
 }
 
 function formatDate(date){
