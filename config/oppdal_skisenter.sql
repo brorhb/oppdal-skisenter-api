@@ -17,13 +17,12 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
 DROP TABLE IF EXISTS `alert`;
 CREATE TABLE `alert` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) NOT NULL,
   `is_live` tinyint(1) DEFAULT NULL,
-  `timestamp` date DEFAULT NULL,
+  `timestamp` TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
@@ -39,7 +38,7 @@ DROP TABLE IF EXISTS `avalanche_log`;
 CREATE TABLE `avalanche_log` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `level` int(11) NOT NULL DEFAULT '1',
-  `timestamp` date DEFAULT NULL,
+  `timestamp` TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `level` (`level`),
@@ -158,7 +157,7 @@ CREATE TABLE `snow_conditions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) NOT NULL,
   `is_live` tinyint(1) DEFAULT NULL,
-  `timestamp` varchar(255) DEFAULT NULL,
+  `timestamp` TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 
@@ -242,9 +241,9 @@ CREATE TABLE `zones` (
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 INSERT INTO `alert` (`id`, `message`, `is_live`, `timestamp`) VALUES
-(1, 'Vangslia stengt grunnet vind.', 0, '2021-06-09'),
-(2, 'Hovden stengt grunnet vind', 1, '2021-07-04'),
-(11, 'Håkerexpressen er stengt grunnet vind', 0, '2021-07-04');
+(1, 'Vangslia stengt grunnet vind.', 0, '2008-01-01 00:00:01'),
+(2, 'Hovden stengt grunnet vind', 1, '2008-01-01 00:00:01'),
+(11, 'Håkerexpressen er stengt grunnet vind', 0, '2008-01-01 00:00:01');
 
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (1, 'none'),
@@ -253,7 +252,7 @@ INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
 (4, 'high');
 
 INSERT INTO `avalanche_log` (`id`, `level`, `timestamp`) VALUES
-(1, 1, '2020-12-03');
+(1, 1, '2008-01-01 00:00:01');
 
 INSERT INTO `camera` (`id`, `name`, `url`, `zone`) VALUES
 (1, 'Vangslia', 'https://player.twitch.tv/?channel=oppdal_skisenter&parent=${PARENT}&autoplay=true', 1),
@@ -346,13 +345,13 @@ INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `
 (30, 'Ny heis', 2, NULL, NULL, 500, 2000, 4, '', 3, NULL);
 
 INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`) VALUES
-(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2021-08-06T13:31:00Z'),
-(2, 'Svært gode forhold i Vangslia i dag.', 1, '2021-08-06T13:31:00Z'),
-(3, 'Svært gode forhold i Hovden i dag.', 0, '2021-08-06T13:31:00Z'),
-(11, 'Test', 0, '2021-08-07T13:31:00Z'),
-(21, 'Gode forhold i løypene i dag. ', 0, '2021-08-07T13:31:00Z'),
-(31, 'Veldig nice', 0, '2021-08-08T13:31:00Z'),
-(41, 'Test', 0, '2021-08-09T13:00:00Z');
+(1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2008-01-01 00:00:01'),
+(2, 'Svært gode forhold i Vangslia i dag.', 1, '2008-01-01 00:00:01'),
+(3, 'Svært gode forhold i Hovden i dag.', 0, '2008-01-01 00:00:01'),
+(11, 'Test', 0, '2008-01-01 00:00:01'),
+(21, 'Gode forhold i løypene i dag. ', 0, '2008-01-01 00:00:01'),
+(31, 'Veldig nice', 0, '2008-01-01 00:00:01'),
+(41, 'Test', 0, '2008-01-01 00:00:01');
 
 INSERT INTO `status_types` (`id`, `name`) VALUES
 (1, 'open'),

@@ -35,8 +35,8 @@ module.exports = function(fastify, opts, done) {
                 const result = await new Promise((resolve, reject) => {
                     connection.query(`
                     INSERT INTO snow_conditions (message, is_live, timestamp)
-                    VALUES (?, ?, ?);
-                    `, [message, 0, createDate()], (error, result) => {
+                    VALUES (?, ?, DEFAULT);
+                    `, [message, 0], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     });
@@ -69,9 +69,9 @@ module.exports = function(fastify, opts, done) {
                     SET
                         message = ?,
                         is_live = ?,
-                        timestamp = ?
+                        timestamp = DEFAULT
                     WHERE id = '${id}';
-                    `, [message.message, message.is_live ? 1 : 0, createDate()], (error, result) => {
+                    `, [message.message, message.is_live ? 1 : 0], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     })
@@ -114,17 +114,3 @@ module.exports = function(fastify, opts, done) {
 
     done();
 }
-
-function createDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    let month = today.getMonth() + 1;
-    let day = today.getDate();
-    let time = today.getHours();
-    let min = today.getMinutes();
-    if (month < 10) month = `0${month}`;
-    if (day < 10) day = `0${day}`;
-    if (time < 10) time = `0${time}`;
-    if (min < 10) min = `0${min}`;
-    return `${year}-${month}-${day}T${time}:${min}:00Z`
-};
