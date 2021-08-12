@@ -65,6 +65,9 @@
          case 2:
              data = 0x33; //red
              break;
+        case 3:
+            data = 0x30; // off
+            break;
          default:
              data = undefined; 
              break;
@@ -76,7 +79,7 @@
  
  const relaysTelegramConstructor = async (items) => {
      let arrays = await updateBillboards(items);
-     let telegrams = [[STX, 0x32, ...arrays[0], CRC, ETX], [STX, 0x31, ...arrays[1], CRC, ETX]];
+     let telegrams = [[STX, 0x31, ...arrays[0], CRC, ETX], [STX, 0x32, ...arrays[1], CRC, ETX]];
      return telegrams;
  }
  

@@ -106,8 +106,10 @@ module.exports = function (fastify, opts, done) {
     preValidation: authMiddleware,
     handler: async (req, res) => {
       const {type, zone} = req.body
-      let status_type = 2;
+      
+      let status_type = 3;
       if(type == "open") status_type = 1
+      else if(type == "closed") status_type = 2
       try {
         await new Promise((resolve, reject) => {
           connection.query(`

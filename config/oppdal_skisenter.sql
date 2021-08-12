@@ -268,19 +268,19 @@ INSERT INTO `difficulty` (`id`, `label`) VALUES
 (7, 'terrainpark');
 
 INSERT INTO `facilities` (`id`, `name`, `type`, `status`, `zone`, `panorama_position`) VALUES
-(1, 'Vangslia Kro', 2, 1, NULL, NULL),
-(11, 'Topp resturanten', 2, 1, NULL, NULL),
-(21, 'Rockoss', 2, 1, NULL, NULL),
-(31, 'Gråberget', 2, 1, NULL, NULL),
-(41, 'Carving cafe', 2, 1, NULL, NULL),
-(71, 'Aurhøa', 6, 1, NULL, NULL),
-(81, 'Ådalen', 6, 1, NULL, NULL),
-(91, 'Vangslia - Skiutleie', 4, 1, NULL, NULL),
-(101, 'Hovden - Skiutleie', 4, 1, NULL, NULL),
-(111, 'Stølen - Skiutleie', 4, 1, NULL, NULL),
-(121, 'Loftet afterski', 7, 1, NULL, NULL),
-(131, 'Låven afterski', 7, 1, NULL, NULL),
-(141, 'Rockoss', 7, 1, NULL, NULL);
+(1, 'Vangslia Kro', 2, 1, NULL, '[0,20]'),
+(11, 'Toppresturanten', 2, 1, NULL, '[0,21]'),
+(21, 'Rockoss', 2, 1, NULL, '[0,22]'),
+(31, 'Gråberget', 2, 1, NULL, '[0,23]'),
+(41, 'Carving cafe', 2, 1, NULL, '[0,24]'),
+(71, 'Aurhøa', 6, 1, NULL, '[0,27]'),
+(81, 'Ådalen', 6, 1, NULL, '[0,28]'),
+(91, 'Vangslia - Skiutleie', 4, 1, NULL, '[0,32]'),
+(101, 'Hovden - Skiutleie', 4, 1, NULL, '[0,33]'),
+(111, 'Stølen - Skiutleie', 4, 1, NULL, '[0,34]'),
+(121, 'Loftet afterski', 7, 1, NULL, '[0,38]'),
+(131, 'Låven afterski', 7, 1, NULL, '[0,39]'),
+(141, 'Rockoss', 7, 1, NULL, '[0,40]');
 
 INSERT INTO `facilities_types` (`id`, `name`) VALUES
 (1, 'toilet'),
@@ -341,8 +341,7 @@ INSERT INTO `lifts` (`id`, `name`, `status`, `start_position`, `end_position`, `
 (26, 'Barneheis', 1, NULL, NULL, 40, 200, 1, 'p', 4, '[0,14]'),
 (27, 'Stølen 1', 1, NULL, NULL, 341, 1343, 3, 'r', 4, '[0,15]'),
 (28, 'Stølen 3', 1, NULL, NULL, 299, 1089, 3, 's', 4, '[0,16]'),
-(29, 'Fjellheisen', 1, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]'),
-(30, 'Ny heis', 2, NULL, NULL, 500, 2000, 4, '', 3, NULL);
+(29, 'Fjellheisen', 1, NULL, NULL, 353, 1618, 3, 't', 4, '[0,17]');
 
 INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`) VALUES
 (1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2008-01-01 00:00:01'),
@@ -401,25 +400,25 @@ INSERT INTO `track_coord_in_map` (`id`, `coord`, `track`) VALUES
 
 INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `length`, `difficulty`, `lifts`, `zone`, `panorama_position`) VALUES
 (1, 'Danskeløypa', '[1,3]', 2, 2, 1500, 2, '[20]', 1, '[1,0]'),
-(3, 'Pomaløypa', '[]', 2, 2, 1200, 2, '[20,4,14,15]', 1, '[1,1]'),
-(4, 'Midtløypa', '[]', 2, 2, 1400, 2, '[]', 1, '[1,2]'),
-(5, 'Utforløypa', '[6]', 2, 2, 1600, 3, '[18]', 1, '[1,3]'),
-(6, 'Solheisløypa', '[]', 2, 2, 1500, 1, '[18]', 1, '[1,4]'),
-(7, 'Minipark', NULL, NULL, 2, 1700, 7, '[18]', 1, '[1,5]'),
-(8, 'Henget', '[]', NULL, 2, 700, 4, '[]', 1, '[1,6]'),
-(9, 'Solsvingen', NULL, NULL, 2, 2900, 1, NULL, 1, '[1,7]'),
-(10, 'Barneland', '[]', 2, 2, 500, 1, '[]', 1, '[1,8]'),
-(11, 'Tverrløypa', NULL, NULL, 2, 1500, 1, NULL, 1, '[1,9]'),
-(12, 'Vesthenget', NULL, NULL, 2, 700, 4, NULL, 1, '[1,10]'),
-(13, 'Lysløypa', '[]', 2, 2, 500, 2, '[]', 1, '[1,11]'),
-(14, 'Vesttoppen', NULL, NULL, 2, 400, 6, NULL, 1, '[1,12]'),
-(15, 'Fjellsida', '[]', NULL, 1, 2100, 2, '[]', 11, '[1,13]'),
-(16, 'Toppløypa', NULL, NULL, 2, 400, 3, NULL, 1, '[1,14]'),
-(17, 'Håkerløypa', '[]', NULL, 2, 1500, 2, '[20]', 1, '[1,15]'),
-(20, 'Park', '[5]', 2, 2, 1500, 7, '[18]', 1, '[1,16]'),
-(21, 'Bjørndalsløypa', NULL, NULL, 1, 1900, 4, NULL, 3, '[1,17]'),
-(22, 'Høgerhenget', NULL, NULL, 1, 600, 4, NULL, 3, '[1,18]'),
-(23, 'Bjerkeløypa', NULL, NULL, 1, 1900, 6, NULL, 3, '[1,19]'),
+(3, 'Pomaløypa', '[]', 2, 2, 1200, 2, '[20,4,14,15]', 1, '[1,2]'),
+(4, 'Midtløypa', '[]', 2, 2, 1400, 2, '[]', 1, '[1,3]'),
+(5, 'Utforløypa', '[6]', 2, 2, 1600, 3, '[18]', 1, '[1,4]'),
+(6, 'Solheisløypa', '[]', 2, 2, 1500, 1, '[18]', 1, '[1,5]'),
+(7, 'Minipark', NULL, NULL, 2, 1700, 7, '[18]', 1, '[1,6]'),
+(8, 'Henget', '[]', NULL, 2, 700, 4, '[]', 1, '[1,7]'),
+(9, 'Solsvingen', NULL, NULL, 2, 2900, 1, NULL, 1, '[1,8]'),
+(10, 'Barneland', '[]', 2, 2, 500, 1, '[]', 1, '[1,9]'),
+(11, 'Tverrløypa', NULL, NULL, 2, 1500, 1, NULL, 1, '[1,10]'),
+(12, 'Vesthenget', NULL, NULL, 2, 700, 4, NULL, 1, '[1,11]'),
+(13, 'Lysløypa', '[]', 2, 2, 500, 2, '[]', 1, '[1,12]'),
+(14, 'Vesttoppen', NULL, NULL, 2, 400, 6, NULL, 1, '[1,13]'),
+(15, 'Fjellsida', '[]', NULL, 1, 2100, 2, '[]', 11, '[1,14]'),
+(16, 'Toppløypa', NULL, NULL, 2, 400, 3, NULL, 1, '[1,15]'),
+(17, 'Håkerløypa', '[]', NULL, 2, 1500, 2, '[20]', 1, '[1,16]'),
+(20, 'Park', '[5]', 2, 2, 1500, 7, '[18]', 1, '[1,19]'),
+(21, 'Bjørndalsløypa', NULL, NULL, 1, 1900, 4, NULL, 3, '[1,18]'),
+(22, 'Høgerhenget', NULL, NULL, 1, 600, 4, NULL, 3, '[1,19]'),
+(23, 'Bjerkeløypa', NULL, NULL, 1, 1900, 6, NULL, 3, '[1,20]'),
 (24, 'Storstugguløypa', NULL, NULL, 1, 1500, 6, NULL, 3, '[1,20]'),
 (25, 'Bualøypa', NULL, NULL, 1, 2600, 2, NULL, 11, '[1,21]'),
 (26, 'Baksida', NULL, NULL, 1, 1500, 2, NULL, 3, '[1,22]'),
@@ -438,8 +437,7 @@ INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `len
 (43, 'Transporten', NULL, NULL, 1, 2000, 1, NULL, 11, '[1,35]'),
 (44, 'Hovdensvingen', NULL, NULL, 1, 2200, 1, NULL, 11, '[1,36]'),
 (45, 'Elvekanten', NULL, NULL, 1, 900, 2, NULL, 11, '[1,37]'),
-(46, 'Gråbergløypa', NULL, NULL, 1, 1600, 1, NULL, NULL, '[1,38]'),
-(47, 'Ny nedfart', '[4,5]', 2, 2, 4, 4, '[18]', 1, '[1,39]');
+(46, 'Gråbergløypa', NULL, NULL, 1, 1600, 1, NULL, NULL, '[1,38]');
 
 INSERT INTO `user_roles` (`id`, `type`) VALUES
 (1, 'admin');
