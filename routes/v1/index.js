@@ -2,6 +2,7 @@ const connection = require("../../connection")
 const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
 const getAlerts = require('../../helpers/getAlerts');
+const getSnowconditions = require('../../helpers/getSnowconditions')
 var weatherCache
 var avalancheCache
 var rainCache
@@ -230,15 +231,12 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get("/alert", async () => {
     let messages = await getAlerts();
-    return messages;
+    return messages
   })
 
   fastify.get("/snow-conditions", async () => {
-    let conditions = await getDataFromTable("snow_conditions")
-    return conditions.filter((item) => {
-      if(!item.is_live) return false;
-      return true;
-    })
+    let conditions = await getSnowconditions();
+    return conditions;
   })
   done()
 }
