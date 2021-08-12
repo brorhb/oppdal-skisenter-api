@@ -242,7 +242,6 @@ CREATE TABLE `zones` (
 
 INSERT INTO `alert` (`id`, `message`, `is_live`, `timestamp`) VALUES
 (1, 'Vangslia stengt grunnet vind.', 0, '2008-01-01 00:00:01'),
-(2, 'Hovden stengt grunnet vind', 1, '2008-01-01 00:00:01'),
 (11, 'Håkerexpressen er stengt grunnet vind', 0, '2008-01-01 00:00:01');
 
 INSERT INTO `avalanche_levels` (`id`, `value`) VALUES
@@ -347,10 +346,7 @@ INSERT INTO `snow_conditions` (`id`, `message`, `is_live`, `timestamp`) VALUES
 (1, 'Nysnø gjør at det er svært gode forhold i Stølen i dag!', 1, '2008-01-01 00:00:01'),
 (2, 'Svært gode forhold i Vangslia i dag.', 1, '2008-01-01 00:00:01'),
 (3, 'Svært gode forhold i Hovden i dag.', 0, '2008-01-01 00:00:01'),
-(11, 'Test', 0, '2008-01-01 00:00:01'),
-(21, 'Gode forhold i løypene i dag. ', 0, '2008-01-01 00:00:01'),
-(31, 'Veldig nice', 0, '2008-01-01 00:00:01'),
-(41, 'Test', 0, '2008-01-01 00:00:01');
+(21, 'Gode forhold i løypene i dag. ', 0, '2008-01-01 00:00:01');
 
 INSERT INTO `status_types` (`id`, `name`) VALUES
 (1, 'open'),
