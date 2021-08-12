@@ -437,7 +437,7 @@ INSERT INTO `tracks` (`id`, `name`, `connected_tracks`, `season`, `status`, `len
 (43, 'Transporten', NULL, NULL, 1, 2000, 1, NULL, 11, '[1,35]'),
 (44, 'Hovdensvingen', NULL, NULL, 1, 2200, 1, NULL, 11, '[1,36]'),
 (45, 'Elvekanten', NULL, NULL, 1, 900, 2, NULL, 11, '[1,37]'),
-(46, 'Gråbergløypa', NULL, NULL, 1, 1600, 1, NULL, NULL, '[1,38]');
+(46, 'Gråbergløypa', NULL, NULL, 1, 1600, 1, NULL, 2, '[1,38]');
 
 INSERT INTO `user_roles` (`id`, `type`) VALUES
 (1, 'admin');

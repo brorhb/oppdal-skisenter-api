@@ -86,5 +86,39 @@ module.exports = function (fastify, opts, done) {
             }
         }
     })
+    fastify.route({
+        method: "PATCH",
+        url: "/clear-relays",
+        preValidation: authMiddleware,
+        handler: async (req, res) => {
+            const token = req.headers.authorization
+            try {
+                let url = process.env.DO_URL;
+                fetch(url+'/clear-relays', {
+                    method: "PATCH",
+                    headers: { 'Authorization': token, 'Content-Type': 'application/json'}
+                })
+                .then(data => data.json())
+                .then(data => {
+                    return {
+                        "success": true,
+                        "results": data
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    return {
+                        "success": false,
+                        "results": error
+                    }
+                });
+            } catch(err) {
+                return {
+                "success": false,
+                "message": err
+                }
+            }
+        }
+    })
     done();
 }

@@ -10,7 +10,7 @@ module.exports = function(fastify, opts, done) {
         handler: async (req, res) => {
             try {
                 const result = await new Promise((resolve, reject) => {
-                    connection.query('SELECT * FROM alert;', (error, result) => {
+                    connection.query('SELECT * FROM alert ORDER BY timestamp DESC;', (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     });
