@@ -54,15 +54,16 @@ module.exports = function (fastify, opts, done) {
       let url = process.env.DO_URL;
       console.log('TRYING TO PATCH URL', url + '/message', req.body);
       try {
-        let result = fetch(url + '/message', {
+        let result = await fetch(url + '/message', {
           method: 'PATCH',
           body: JSON.stringify(req.body),
           headers: { Authorization: token, 'Content-Type': 'application/json' },
         });
-        let json = await result.json();
+        let json = result;
+        console.log(json);
         return {
           success: true,
-          results: json,
+          results: 'json',
         };
       } catch (err) {
         console.log('ERROR from' + url, err);
