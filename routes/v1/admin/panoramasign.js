@@ -51,9 +51,9 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       console.log(req.body);
       const token = req.headers.authorization;
+      let url = process.env.DO_URL;
+      console.log('TRYING TO PATCH URL', url + '/message', body);
       try {
-        let url = process.env.DO_URL;
-        console.log('TRYING TO PATCH URL', url + '/message', body);
         let result = fetch(url + '/message', {
           method: 'PATCH',
           body: JSON.stringify(req.body),
@@ -65,6 +65,7 @@ module.exports = function (fastify, opts, done) {
           results: json,
         };
       } catch (err) {
+        console.log('ERROR from' + url, err);
         return {
           success: false,
           message: err,
