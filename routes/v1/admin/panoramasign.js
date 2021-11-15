@@ -59,7 +59,7 @@ module.exports = function (fastify, opts, done) {
           body: JSON.stringify(req.body),
           headers: { Authorization: token, 'Content-Type': 'application/json' },
         });
-        let json = result;
+        let json = result.json();
         console.log(json);
         return {
           success: true,
