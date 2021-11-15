@@ -52,7 +52,7 @@ module.exports = function (fastify, opts, done) {
       console.log(req.body);
       const token = req.headers.authorization;
       let url = process.env.DO_URL;
-      console.log('TRYING TO PATCH URL', url + '/message', body);
+      console.log('TRYING TO PATCH URL', url + '/message', req.body);
       try {
         let result = fetch(url + '/message', {
           method: 'PATCH',
