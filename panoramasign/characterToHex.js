@@ -1,4 +1,4 @@
-export default characterToHex = {
+module.exports = {
   A: 0x41,
   B: 0x42,
   C: 0x43,
