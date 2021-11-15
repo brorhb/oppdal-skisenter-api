@@ -49,6 +49,7 @@ module.exports = function (fastify, opts, done) {
     url: '/message',
     preValidation: authMiddleware,
     handler: async (req, res) => {
+      console.log(req.body);
       const token = req.headers.authorization;
       try {
         let url = process.env.DO_URL;
