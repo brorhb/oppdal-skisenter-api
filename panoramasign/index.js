@@ -39,16 +39,13 @@ fastify.route({
   url: '/message',
   preValidation: authMiddleware,
   handler: async (req, res) => {
-    let { message } = JSON.parse(req.body);
+    let { message } =
+      process.env.NODE_ENV === 'production' ? req.body : JSON.parse(req.body);
     try {
       let telegram = await panoramaSign.billboardMessageConstructor(message);
-      console.log(telegram);
-      let results = [];
+      let results = {};
       if (process.env.NODE_ENV !== 'development') {
-        for (let i = 0; i < telegram.length; i++) {
-          let result = await panoramaSign.updatePanoramaSign(telegram[i]);
-          results.push(result);
-        }
+        result = await panoramaSign.updatePanoramaSign(telegram[i]);
       }
       return {
         success: true,
