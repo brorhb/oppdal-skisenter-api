@@ -23,23 +23,32 @@ module.exports = function (fastify, opts, done) {
           .then((data) => data.json())
           .then((data) => {
             console.log(data);
-            return {
-              success: true,
-              results: data,
-            };
+            res
+              .code(200)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: true,
+                results: data,
+              });
           })
           .catch((error) => {
             console.log(error);
-            return {
-              success: false,
-              results: error,
-            };
+            res
+              .code(500)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: false,
+                results: error,
+              });
           });
       } catch (err) {
-        return {
-          success: false,
-          message: err,
-        };
+        res
+          .code(500)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            success: false,
+            message: err,
+          });
       }
     },
   });
@@ -61,16 +70,21 @@ module.exports = function (fastify, opts, done) {
         });
         let json = await result.json();
         console.log(json);
-        return {
-          success: true,
-          results: json,
-        };
+        res
+          .code(200)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            success: true,
+            results: json,
+          });
       } catch (err) {
-        console.log('ERROR from' + url, err);
-        return {
-          success: false,
-          message: err,
-        };
+        res
+          .code(500)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            success: false,
+            message: err,
+          });
       }
     },
   });
@@ -98,23 +112,32 @@ module.exports = function (fastify, opts, done) {
           .then((data) => data.json())
           .then((data) => {
             console.log(data);
-            return {
-              success: true,
-              results: data,
-            };
+            res
+              .code(200)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: true,
+                results: data,
+              });
           })
           .catch((error) => {
             console.log(error);
-            return {
-              success: false,
-              results: error,
-            };
+            res
+              .code(500)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: false,
+                results: error,
+              });
           });
       } catch (err) {
-        return {
-          success: false,
-          message: err,
-        };
+        res
+          .code(500)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            success: false,
+            message: err,
+          });
       }
     },
   });
@@ -132,23 +155,32 @@ module.exports = function (fastify, opts, done) {
         })
           .then((data) => data.json())
           .then((data) => {
-            return {
-              success: true,
-              results: data,
-            };
+            res
+              .code(200)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: true,
+                results: data,
+              });
           })
           .catch((error) => {
             console.log(error);
-            return {
-              success: false,
-              results: error,
-            };
+            res
+              .code(500)
+              .header('Content-Type', 'application/json; charset=utf-8')
+              .send({
+                success: false,
+                results: error,
+              });
           });
       } catch (err) {
-        return {
-          success: false,
-          message: err,
-        };
+        res
+          .code(500)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            success: false,
+            message: err,
+          });
       }
     },
   });

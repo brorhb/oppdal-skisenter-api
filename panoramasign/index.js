@@ -18,18 +18,24 @@ fastify.route({
           results.push(result);
         }
       }
-      return {
-        success: true,
-        decodedTelegram: new TextDecoder('utf-8')
-          .decode(new Uint8Array(telegram))
-          .trim(),
-        results: results,
-      };
+      res
+        .code(200)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: true,
+          decodedTelegram: new TextDecoder('utf-8')
+            .decode(new Uint8Array(telegram))
+            .trim(),
+          results: results,
+        });
     } catch (err) {
-      return {
-        success: false,
-        message: err,
-      };
+      res
+        .code(500)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: false,
+          message: err,
+        });
     }
   },
 });
@@ -45,22 +51,26 @@ fastify.route({
       let telegram = await panoramaSign.billboardMessageConstructor(message);
       let results = {};
       if (process.env.NODE_ENV !== 'development') {
-        result = await panoramaSign.updatePanoramaSign(telegram[i]);
+        result = await panoramaSign.updatePanoramaSign(telegram);
       }
-      return {
-        success: true,
-        telegram: telegram,
-        decodedTelegram: new TextDecoder('utf-8')
-          .decode(new Uint8Array(telegram))
-          .trim(),
-        results: results,
-      };
+      res
+        .code(200)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: true,
+          decodedTelegram: new TextDecoder('utf-8')
+            .decode(new Uint8Array(telegram))
+            .trim(),
+          results: results,
+        });
     } catch (err) {
-      console.warn(err);
-      return {
-        success: false,
-        message: err,
-      };
+      res
+        .code(500)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: false,
+          message: err,
+        });
     }
   },
 });
@@ -74,18 +84,24 @@ fastify.route({
     try {
       let telegram = await panoramaSign.avalancheTelegramConstructor(color);
       let result = await panoramaSign.updatePanoramaSign(telegram);
-      return {
-        success: true,
-        decodedTelegram: new TextDecoder('utf-8')
-          .decode(new Uint8Array(telegram))
-          .trim(),
-        results: result,
-      };
+      res
+        .code(200)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: true,
+          decodedTelegram: new TextDecoder('utf-8')
+            .decode(new Uint8Array(telegram))
+            .trim(),
+          results: result,
+        });
     } catch (error) {
-      return {
-        success: false,
-        message: error,
-      };
+      res
+        .code(500)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: false,
+          message: err,
+        });
     }
   },
 });
@@ -98,18 +114,24 @@ fastify.route({
     try {
       let telegram = await panoramaSign.setAllRelaysTelegramConstructor(false);
       let result = await panoramaSign.updatePanoramaSign(telegram);
-      return {
-        success: true,
-        decodedTelegram: new TextDecoder('utf-8')
-          .decode(new Uint8Array(telegram))
-          .trim(),
-        results: result,
-      };
+      res
+        .code(200)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: true,
+          decodedTelegram: new TextDecoder('utf-8')
+            .decode(new Uint8Array(telegram))
+            .trim(),
+          results: result,
+        });
     } catch (error) {
-      return {
-        success: false,
-        results: result,
-      };
+      res
+        .code(500)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: false,
+          message: err,
+        });
     }
   },
 });
