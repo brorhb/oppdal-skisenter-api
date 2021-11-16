@@ -12,12 +12,17 @@ fastify.route({
     try {
       let telegrams = await panoramaSign.relaysTelegramConstructor(items);
       let results = [];
-      for (let i = 0; i < telegrams.length; i++) {
-        let result = await panoramaSign.updatePanoramaSign(telegrams[i]);
-        results.push(result);
+      if (process.env.NODE_ENV !== 'development') {
+        for (let i = 0; i < telegrams.length; i++) {
+          let result = await panoramaSign.updatePanoramaSign(telegrams[i]);
+          results.push(result);
+        }
       }
       return {
         success: true,
+        decodedTelegram: new TextDecoder('utf-8')
+          .decode(new Uint8Array(telegram))
+          .trim(),
         results: results,
       };
     } catch (err) {
@@ -34,19 +39,27 @@ fastify.route({
   url: '/message',
   preValidation: authMiddleware,
   handler: async (req, res) => {
-    let { message } = req.body;
+    let { message } = JSON.parse(req.body);
     try {
-      let telegram = await panoramaSign.messageTelegramConstructor(message);
+      let telegram = await panoramaSign.billboardMessageConstructor(message);
+      console.log(telegram);
       let results = [];
-      for (let i = 0; i < telegram.length; i++) {
-        let result = await panoramaSign.updatePanoramaSign(telegram[i]);
-        results.push(result);
+      if (process.env.NODE_ENV !== 'development') {
+        for (let i = 0; i < telegram.length; i++) {
+          let result = await panoramaSign.updatePanoramaSign(telegram[i]);
+          results.push(result);
+        }
       }
       return {
         success: true,
+        telegram: telegram,
+        decodedTelegram: new TextDecoder('utf-8')
+          .decode(new Uint8Array(telegram))
+          .trim(),
         results: results,
       };
     } catch (err) {
+      console.warn(err);
       return {
         success: false,
         message: err,
@@ -66,6 +79,9 @@ fastify.route({
       let result = await panoramaSign.updatePanoramaSign(telegram);
       return {
         success: true,
+        decodedTelegram: new TextDecoder('utf-8')
+          .decode(new Uint8Array(telegram))
+          .trim(),
         results: result,
       };
     } catch (error) {
@@ -87,6 +103,9 @@ fastify.route({
       let result = await panoramaSign.updatePanoramaSign(telegram);
       return {
         success: true,
+        decodedTelegram: new TextDecoder('utf-8')
+          .decode(new Uint8Array(telegram))
+          .trim(),
         results: result,
       };
     } catch (error) {

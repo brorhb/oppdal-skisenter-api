@@ -47,7 +47,7 @@ const sendTelegram = async (telegram, port) => {
 };
 
 const billboardMessageConstructor = (message) => {
-  message = message.split('').map((char) => characterToHex(char));
+  message = message.split('').map((char) => characterToHex[char]);
   return [STX, 0x06, 0x14, 0x02, 0x07, ...message, CRC, ETX];
 };
 
@@ -151,4 +151,5 @@ module.exports = {
   relaysTelegramConstructor,
   setAllRelaysTelegramConstructor,
   clearDisplayTelegramConstructor,
+  billboardMessageConstructor,
 };
