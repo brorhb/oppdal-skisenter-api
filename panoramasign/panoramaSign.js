@@ -21,11 +21,15 @@ const sendTelegram = async (telegram, port) => {
       client.write(hexVal);
     });
     client.on('error', function (error) {
-      console.log(error);
+      console.log('FAILURE', error);
       client.destroy();
       reject(error);
     });
     client.on('data', function (data) {
+      console.log(
+        'SUCCESS',
+        data.map((value) => value.toString(16))
+      );
       try {
         if (data[1].toString(16) == ACK) {
           client.end();
@@ -35,6 +39,9 @@ const sendTelegram = async (telegram, port) => {
           reject('NACK');
         } else if (data[0].toString(16) == ACK) {
           // TODO: Når avalanche oppdateres svarer tavle med <Buffer CTX>, og så ny melding med <Buffer ACK, CMD....>. Finne ut hvorfor
+          client.end();
+          resolve();
+        } else {
           client.end();
           resolve();
         }
