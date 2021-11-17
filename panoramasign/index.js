@@ -51,7 +51,7 @@ fastify.route({
       let telegram = await panoramaSign.billboardMessageConstructor(message);
       let results = {};
       if (process.env.NODE_ENV !== 'development') {
-        result = await panoramaSign.updatePanoramaSign(telegram);
+        results = await panoramaSign.updatePanoramaSign(telegram);
       }
       res
         .code(200)

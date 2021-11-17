@@ -18,17 +18,18 @@ const sendTelegram = async (telegram, port) => {
     let hexVal = new Uint8Array(telegram);
     let client = net.Socket();
     client.connect(port, HOST, function () {
+      console.log('Connected to ' + HOST + ':' + port);
       client.write(hexVal);
     });
     client.on('error', function (error) {
-      console.log('FAILURE', error);
+      console.log('FAILURE', `${error}`);
       client.destroy();
       reject(error);
     });
     client.on('data', function (data) {
       console.log(
         'SUCCESS',
-        data.map((value) => value.toString(16))
+        [...data].map((value) => value?.toString(16))
       );
       try {
         if (data[1].toString(16) == ACK) {
