@@ -32,13 +32,13 @@ const sendTelegram = async (telegram, port) => {
         [...data].map((value) => value?.toString(16))
       );
       try {
-        if (data[1].toString(16) == ACK) {
+        if (data[1]?.toString(16) == ACK) {
           client.end();
           resolve();
-        } else if (data[1].toString(16) == NACK) {
+        } else if (data[1]?.toString(16) == NACK) {
           client.end();
           reject('NACK');
-        } else if (data[0].toString(16) == ACK) {
+        } else if (data[0]?.toString(16) == ACK) {
           // TODO: Når avalanche oppdateres svarer tavle med <Buffer CTX>, og så ny melding med <Buffer ACK, CMD....>. Finne ut hvorfor
           client.end();
           resolve();
@@ -69,6 +69,7 @@ const updatePanoramaSign = async (telegram) => {
       results[PORTS[i]] = error;
     }
   }
+  console.log(results);
   return results;
 };
 
