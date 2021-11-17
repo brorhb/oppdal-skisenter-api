@@ -18,17 +18,16 @@ fastify.route({
           results.push(result);
         }
       }
+      console.log('results', results);
       res
         .code(200)
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
           success: true,
-          decodedTelegram: new TextDecoder('utf-8')
-            .decode(new Uint8Array(telegram))
-            .trim(),
           results: results,
         });
     } catch (err) {
+      console.log('ERROR', err);
       res
         .code(500)
         .header('Content-Type', 'application/json; charset=utf-8')
@@ -64,6 +63,7 @@ fastify.route({
           results: results,
         });
     } catch (err) {
+      console.log('ERROR', err);
       res
         .code(500)
         .header('Content-Type', 'application/json; charset=utf-8')
