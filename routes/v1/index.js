@@ -3,70 +3,7 @@ const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
 const getAlerts = require('../../helpers/getAlerts');
 const getSnowconditions = require('../../helpers/getSnowconditions')
-var weatherCache = {
-  dateTime: Date.now() - 300001,
-  result: [
-    {
-      stationId: 796,
-      stationName: 'Vangshøa_ Oppdal',
-      dateTime: '2021-11-22 17:48:17',
-      wind: {
-        speed: 4.7,
-        gust: 6.1,
-        min: 4.2,
-        unit: 'm/s',
-        direction: 264,
-      },
-      light: 0,
-      daily: {
-        max_temp: 0,
-        min_temp: -7.7,
-      },
-      temperature: -5,
-      zone: 1,
-    },
-    {
-      stationId: 1346,
-      stationName: 'Vangslia_ Oppdal',
-      dateTime: '2021-11-22 17:48:28',
-      wind: {
-        speed: 10,
-        gust: 11.4,
-        min: 8.6,
-        unit: 'm/s',
-        direction: 296,
-      },
-      humidity: 95.9,
-      pressure: 963,
-      daily: {
-        max_temp: -1.2,
-        min_temp: -6.6,
-      },
-      temperature: -3.8,
-      zone: 1,
-    },
-    {
-      stationId: 1377,
-      stationName: 'Stølen_ Oppdal',
-      dateTime: '2021-11-22 17:47:40',
-      wind: {
-        speed: 6.4,
-        gust: 7.8,
-        min: 4.7,
-        unit: 'm/s',
-        direction: 25,
-      },
-      humidity: 95.6,
-      pressure: 904.4,
-      daily: {
-        max_temp: 0.1,
-        min_temp: -5.8,
-      },
-      temperature: -2.4,
-      zone: 4,
-    },
-  ],
-};
+var weatherCache;
 var avalancheCache;
 var rainCache;
 
@@ -211,7 +148,7 @@ module.exports = function (fastify, opts, done) {
         ),
       ]);
 
-      if (weatherCache) {
+      if (weatherCache?.result) {
         const cache = weatherCache.result;
         let inCache = [];
         for (var i = 0; i < results.length; i++) {
@@ -234,6 +171,16 @@ module.exports = function (fastify, opts, done) {
         weatherCache = {
           dateTime: Date.now(),
           result: newCache.map((station) => {
+            station['zone'] = weatherStationZones.find(
+              (item) => item.station_id === station.stationId
+            )?.zone_id;
+            return station;
+          }),
+        };
+      } else {
+        weatherCache = {
+          dateTime: Date.now(),
+          result: results.map((station) => {
             station['zone'] = weatherStationZones.find(
               (item) => item.station_id === station.stationId
             )?.zone_id;
