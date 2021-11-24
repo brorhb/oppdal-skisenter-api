@@ -16,6 +16,7 @@ const STX = 0x02,
 const sendTelegram = async (telegram, port) => {
   return new Promise((resolve, reject) => {
     let hexVal = new Uint8Array(telegram);
+    console.log('hexVal', hexVal);
     let client = net.Socket();
     client.connect(port, HOST, function () {
       console.log('Connected to ' + HOST + ':' + port);
@@ -56,6 +57,7 @@ const sendTelegram = async (telegram, port) => {
 
 const billboardMessageConstructor = (message) => {
   message = message.split('').map((char) => characterToHex[char]);
+  // [0x02, 0x06, 0x14]
   return [STX, 0x06, 0x14, 0x02, 0x07, ...message, CRC, ETX];
 };
 
