@@ -3,6 +3,12 @@ const fastify = require('fastify')({ logger: true });
 const authMiddleware = require('.././helpers/authMiddleware');
 const panoramaSign = require('./panoramaSign');
 
+fastify.get('/temp', async (request, reply) => {
+  let telegram = await panoramaSign.temperatureTelegramConstructor();
+  let result = await panoramaSign.sendTelegram(telegram);
+  reply.send(result);
+});
+
 fastify.route({
   method: 'PATCH',
   url: '/relays',

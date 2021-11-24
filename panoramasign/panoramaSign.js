@@ -13,6 +13,11 @@ const STX = 0x02,
   NACK = 0x15,
   CRC = 0x00;
 
+const temperatureTelegramConstructor = async () => {
+  const CMD = 0x24;
+  return [STX, CMD, CRC, ETX];
+};
+
 const sendTelegram = async (telegram, port) => {
   return new Promise((resolve, reject) => {
     let hexVal = new Uint8Array(telegram);
@@ -35,17 +40,17 @@ const sendTelegram = async (telegram, port) => {
       try {
         if (data[1]?.toString(16) == ACK) {
           client.end();
-          resolve();
+          resolve(data);
         } else if (data[1]?.toString(16) == NACK) {
           client.end();
           reject('NACK');
         } else if (data[0]?.toString(16) == ACK) {
           // TODO: Når avalanche oppdateres svarer tavle med <Buffer CTX>, og så ny melding med <Buffer ACK, CMD....>. Finne ut hvorfor
           client.end();
-          resolve();
+          resolve(data);
         } else {
           client.end();
-          resolve();
+          resolve(data);
         }
       } catch (error) {
         client.destroy();
@@ -163,4 +168,5 @@ module.exports = {
   setAllRelaysTelegramConstructor,
   clearDisplayTelegramConstructor,
   billboardMessageConstructor,
+  temperatureTelegramConstructor,
 };
