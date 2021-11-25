@@ -57,7 +57,7 @@ const sendMessageTelegram = async (telegrams, port) => {
       reject(error);
     });
     client.on('data', function (data) {
-      console.log('Received: ' + [...data], `j: ${j}`);
+      console.log('Received: ' + [...data]);
       try {
         console.log('Ending');
         if (telegramCounter < numberOfTelegrams) {
