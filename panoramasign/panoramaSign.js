@@ -33,27 +33,9 @@ const sendTelegram = async (telegram, port) => {
     });
     client.on('data', function (data) {
       console.log('SUCCESS sent telegram', telegram);
-      console.log(
-        'SUCCESS recived',
-        [...data].map((value) => value?.toString(16))
-      );
       try {
         client.end();
         resolve([...data]);
-        /*if (data[1]?.toString(16) == ACK) {
-          client.end();
-          resolve([...data]);
-        } else if (data[1]?.toString(16) == NACK) {
-          client.end();
-          reject('NACK');
-        } else if (data[0]?.toString(16) == ACK) {
-          // TODO: Når avalanche oppdateres svarer tavle med <Buffer CTX>, og så ny melding med <Buffer ACK, CMD....>. Finne ut hvorfor
-          client.end();
-          resolve([...data]);
-        } else {
-          client.end();
-          resolve([...data]);
-        }*/
       } catch (error) {
         client.destroy();
         reject(error);
@@ -66,10 +48,10 @@ const sendMessageToBillboards = async (telegrams) => {
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
-      let messageResult = [];
-      for (var j = 0; j < telegrams.length; j++) {
-        const telegram = telegrams[j];
-        let result = await sendTelegram(telegram, PORTS[i]);
+      var messageResult = [];
+      for (let j = 0; j < telegrams.length; j++) {
+        console.log('telegram before send', telegrams[j], j);
+        let result = await sendTelegram(telegrams[j], PORTS[i]);
         messageResult.push(result);
       }
       results[PORTS[i]] = messageResult;
