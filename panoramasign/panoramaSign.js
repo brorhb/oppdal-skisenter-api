@@ -48,6 +48,7 @@ const sendMessageTelegram = async (telegrams, port) => {
     let numberOfTelegrams = telegrams.length - 1;
     let telegramCounter = 0;
     let client = net.createConnection({ port: port, host: HOST }, () => {
+      console.log('Connected to ' + HOST + ':' + port);
       client.write(new Uint8Array(telegrams[telegramCounter]));
       telegramCounter++;
     });
