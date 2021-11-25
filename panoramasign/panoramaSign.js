@@ -38,7 +38,9 @@ const sendTelegram = async (telegram, port) => {
         [...data].map((value) => value?.toString(16))
       );
       try {
-        if (data[1]?.toString(16) == ACK) {
+        client.end();
+        resolve([...data]);
+        /*if (data[1]?.toString(16) == ACK) {
           client.end();
           resolve([...data]);
         } else if (data[1]?.toString(16) == NACK) {
@@ -51,7 +53,7 @@ const sendTelegram = async (telegram, port) => {
         } else {
           client.end();
           resolve([...data]);
-        }
+        }*/
       } catch (error) {
         client.destroy();
         reject(error);
