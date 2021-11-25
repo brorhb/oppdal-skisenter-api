@@ -61,6 +61,7 @@ const sendTelegram = async (telegram, port) => {
 };
 
 const sendMessageToBillboards = async (telegrams) => {
+  console.log('telegrams', telegrams);
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
