@@ -34,6 +34,7 @@ const sendTelegram = async (telegram, port, j) => {
     client.on('data', function (data) {
       console.log('Received: ' + data, j);
       try {
+        console.log('Ending');
         client.end();
         resolve([...data]);
       } catch (error) {
@@ -68,7 +69,7 @@ const sendMessageToBillboards = async (telegrams) => {
 
 const billboardMessageConstructor = (message) => {
   let messages = [];
-  const end = [0x01, 0x04, 0x01, 0x04];
+  const end = [0x01, 0x04];
   const setup1 = [
     STX,
     0x06, // CMD
