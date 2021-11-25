@@ -105,8 +105,16 @@ const billboardMessageConstructor = (message) => {
     ...end,
   ];
   messages.push(setup2);
-  message = message.split('').map((char) => characterToHex[char]);
-  messages.push([...message, ...end]);
+  message = [
+    STX,
+    0x0a, // CMD
+    0x08, // time message is viewed
+    0x07, // Char set aka font size
+    0x07, // fixed
+    ...message.split('').map((value) => characterToHex[value]),
+    ...end,
+  ];
+  messages.push(message);
   const empty1 = [STX, 0x06, 0x08, 0x07, 0x07, ...end];
   messages.push(empty1);
   const empty2 = [STX, 0x0c, 0x07, 0x07, 0x07, ...end];
