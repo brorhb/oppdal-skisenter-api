@@ -23,7 +23,7 @@ const sendTelegram = async (telegram, port, j) => {
     let client = net.Socket();
     client.connect(port, HOST, function () {
       console.log('Connected to ' + HOST + ':' + port);
-      console.log(telegram, j);
+      console.log('SENT', telegram, j);
       client.write(telegram);
     });
     client.on('error', function (error) {
@@ -32,6 +32,7 @@ const sendTelegram = async (telegram, port, j) => {
       reject(error);
     });
     client.on('data', function (data) {
+      console.log('Received: ' + data, j);
       try {
         client.end();
         resolve([...data]);
