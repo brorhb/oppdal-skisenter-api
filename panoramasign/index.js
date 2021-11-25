@@ -5,7 +5,7 @@ const panoramaSign = require('./panoramaSign');
 
 fastify.get('/temp', async (request, reply) => {
   let telegram = await panoramaSign.temperatureTelegramConstructor();
-  let result = await panoramaSign.sendTelegram(telegram);
+  let result = await panoramaSign.updatePanoramaSign(telegram);
   reply.send(result);
 });
 
@@ -53,10 +53,10 @@ fastify.route({
     let { message } =
       process.env.NODE_ENV === 'production' ? req.body : JSON.parse(req.body);
     try {
-      let telegram = await panoramaSign.billboardMessageConstructor(message);
+      let telegrams = await panoramaSign.billboardMessageConstructor(message);
       let results = {};
       if (process.env.NODE_ENV !== 'development') {
-        results = await panoramaSign.updatePanoramaSign(telegram);
+        results = await panoramaSign.sendMessageToBillboards(telegrams);
       }
       res
         .code(200)

@@ -21,7 +21,6 @@ const temperatureTelegramConstructor = async () => {
 const sendTelegram = async (telegram, port) => {
   return new Promise((resolve, reject) => {
     let hexVal = new Uint8Array(telegram);
-    console.log('hexVal', hexVal);
     let client = net.Socket();
     client.connect(port, HOST, function () {
       console.log('Connected to ' + HOST + ':' + port);
@@ -33,24 +32,25 @@ const sendTelegram = async (telegram, port) => {
       reject(error);
     });
     client.on('data', function (data) {
+      console.log('SUCCESS sent', hexVal);
       console.log(
-        'SUCCESS',
+        'SUCCESS recived',
         [...data].map((value) => value?.toString(16))
       );
       try {
         if (data[1]?.toString(16) == ACK) {
           client.end();
-          resolve(data);
+          resolve([...data]);
         } else if (data[1]?.toString(16) == NACK) {
           client.end();
           reject('NACK');
         } else if (data[0]?.toString(16) == ACK) {
           // TODO: Når avalanche oppdateres svarer tavle med <Buffer CTX>, og så ny melding med <Buffer ACK, CMD....>. Finne ut hvorfor
           client.end();
-          resolve(data);
+          resolve([...data]);
         } else {
           client.end();
-          resolve(data);
+          resolve([...data]);
         }
       } catch (error) {
         client.destroy();
@@ -60,18 +60,86 @@ const sendTelegram = async (telegram, port) => {
   });
 };
 
+const sendMessageToBillboards = async (telegrams) => {
+  let results = {};
+  for (let i = 0; i < PORTS.length; i++) {
+    try {
+      let messageResult = [];
+      for (let j = 0; j < telegrams.length; j++) {
+        let result = await sendTelegram(telegrams[j], PORTS[i]);
+        messageResult.push(result);
+      }
+      results[PORTS[i]] = messageResult;
+    } catch (error) {
+      results[PORTS[i]] = error;
+    }
+  }
+  return results;
+};
+
 const billboardMessageConstructor = (message) => {
+  let messages = [];
+  const end = [0x01, 0x04, 0x01, 0x04];
+  const setup1 = [
+    STX,
+    0x06, // CMD
+    0x08, // time message is viewed
+    0x08, // Char set aka font size
+    0x07, // fixed
+    ...'     <h...'.split('').map((value) => characterToHex(value)),
+    ...end,
+  ];
+  messages.push(setup1);
+  const setup2 = [
+    STX,
+    0x08, // CMD
+    0x08, // time message is viewed
+    0x08, // Char set aka font size
+    0x07, // fixed
+    ...'    <t. '.split('').map((value) => characterToHex[value]),
+    0xb0,
+    0x43,
+    ...end,
+  ];
+  messages.push(setup2);
   message = message.split('').map((char) => characterToHex[char]);
-  // [0x02, 0x06, 0x14]
-  return [STX, 0x06, 0x14, 0x02, 0x07, ...message, CRC, ETX];
+  messages.push([...message, ...end]);
+  const empty1 = [STX, 0x06, 0x08, 0x07, 0x07, ...end];
+  messages.push(empty1);
+  const empty2 = [STX, 0x0c, 0x07, 0x07, 0x07, ...end];
+  messages.push(empty2);
+  const empty3 = [STX, 0x0d, 0x07, 0x07, 0x07, ...end];
+  messages.push(empty3);
+  const empty4 = [STX, 0x0e, 0x07, 0x07, 0x07, ...end];
+  messages.push(empty4);
+  const empty5 = [STX, 0x0f, 0x07, 0x07, 0x07, ...end];
+  messages.push(empty5);
+  const setScrollSpeed = [STX, 0x20, 0x14, 0x00, 0x00, ...end];
+  messages.push(setScrollSpeed);
+  const today = new Date();
+  const time =
+    today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+  const setTime = [
+    STX,
+    0x22,
+    0x00,
+    0x00,
+    0x00,
+    ...time.split('').map((char) => characterToHex[char]),
+    ...end,
+  ];
+  messages.push(setTime);
+  const setBrightness = [STX, 0x21, 0x15, 0x00, 0x00, ...end];
+  messages.push(setBrightness);
+  return messages;
 };
 
 const updatePanoramaSign = async (telegram) => {
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
-      await sendTelegram(telegram, PORTS[i]);
-      results[PORTS[i]] = 'success';
+      let result = await sendTelegram(telegram, PORTS[i]);
+      results[PORTS[i]] = result;
     } catch (error) {
       results[PORTS[i]] = error;
     }
@@ -169,4 +237,5 @@ module.exports = {
   clearDisplayTelegramConstructor,
   billboardMessageConstructor,
   temperatureTelegramConstructor,
+  sendMessageToBillboards,
 };
