@@ -18,11 +18,12 @@ const temperatureTelegramConstructor = async () => {
   return [STX, CMD, CRC, ETX];
 };
 
-const sendTelegram = async (telegram, port) => {
+const sendTelegram = async (telegram, port, j) => {
   return new Promise((resolve, reject) => {
     let client = net.Socket();
     client.connect(port, HOST, function () {
       console.log('Connected to ' + HOST + ':' + port);
+      console.log(telegram, j);
       client.write(telegram);
     });
     client.on('error', function (error) {
@@ -31,7 +32,6 @@ const sendTelegram = async (telegram, port) => {
       reject(error);
     });
     client.on('data', function (data) {
-      console.log('SUCCESS sent telegram', telegram);
       try {
         client.end();
         resolve([...data]);
@@ -48,9 +48,13 @@ const sendMessageToBillboards = async (telegrams) => {
   for (let i = 0; i < PORTS.length; i++) {
     try {
       var messageResult = [];
-      for (let j = 0; j < telegrams.length; j++) {
+      for (let j in telegrams) {
         console.log('telegram before send', telegrams[j], j);
-        let result = await sendTelegram(new Uint8Array(telegrams[j]), PORTS[i]);
+        let result = await sendTelegram(
+          new Uint8Array(telegrams[j]),
+          PORTS[i],
+          j
+        );
         messageResult.push(result);
       }
       results[PORTS[i]] = messageResult;
@@ -130,7 +134,7 @@ const updatePanoramaSign = async (telegram) => {
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
-      let result = await sendTelegram(new Uint8Array(telegram), PORTS[i]);
+      let result = await sendTelegram(new Uint8Array(telegram), PORTS[i], i);
       results[PORTS[i]] = result;
     } catch (error) {
       results[PORTS[i]] = error;
