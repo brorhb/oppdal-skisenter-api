@@ -86,7 +86,7 @@ const sendMessageToBillboards = async (telegrams) => {
   for (let i = 0; i < PORTS.length; i++) {
     try {
       var messageResult = [];
-      messageResult = sendMessageTelegram(telegrams, PORTS[i]);
+      messageResult = await sendMessageTelegram(telegrams, PORTS[i]);
       results[PORTS[i]] = messageResult;
     } catch (error) {
       results[PORTS[i]] = error;
