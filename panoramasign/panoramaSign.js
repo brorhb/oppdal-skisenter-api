@@ -53,24 +53,25 @@ const sendMessageTelegram = async (telegrams, port) => {
     });
     client.on('error', function (error) {
       console.log('FAILURE', `${error}`);
+      console.log('Ending');
       client.end();
       reject(error);
     });
     client.on('data', function (data) {
-      console.log('Received: ' + [...data]);
       try {
-        console.log('Ending');
         if (telegramCounter < numberOfTelegrams) {
           client.write(new Uint8Array(telegrams[telegramCounter]));
           telegramCounter++;
         } else {
           resolve(telegrams);
+          console.log('Ending');
+          resolve([...data]);
           client.end();
         }
-        resolve([...data]);
       } catch (error) {
-        client.end();
+        console.log('Ending');
         reject(error);
+        client.end();
       }
     });
     client.on('end', () => {
