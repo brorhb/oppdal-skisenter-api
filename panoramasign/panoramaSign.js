@@ -43,7 +43,7 @@ const sendTelegram = async (telegram, port) => {
   });
 };
 
-const sendMessageTelegram = async (telegrams) => {
+const sendMessageTelegram = async (telegrams, port) => {
   return new Promise((resolve, reject) => {
     let numberOfTelegrams = telegrams.length - 1;
     let telegramCounter = 0;
