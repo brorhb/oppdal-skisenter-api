@@ -32,7 +32,7 @@ const sendTelegram = async (telegram, port) => {
       reject(error);
     });
     client.on('data', function (data) {
-      console.log('SUCCESS sent', hexVal);
+      console.log('SUCCESS sent telegram', telegram);
       console.log(
         'SUCCESS recived',
         [...data].map((value) => value?.toString(16))
@@ -86,7 +86,7 @@ const billboardMessageConstructor = (message) => {
     0x08, // time message is viewed
     0x08, // Char set aka font size
     0x07, // fixed
-    ...'     <h...'.split('').map((value) => characterToHex(value)),
+    ...'     <h...'.split('').map((value) => characterToHex[value]),
     ...end,
   ];
   messages.push(setup1);

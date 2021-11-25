@@ -63,9 +63,6 @@ fastify.route({
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
           success: true,
-          decodedTelegram: new TextDecoder('utf-8')
-            .decode(new Uint8Array(telegram))
-            .trim(),
           results: results,
         });
     } catch (err) {
