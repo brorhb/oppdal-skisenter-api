@@ -61,6 +61,8 @@ const sendMessageTelegram = async (telegrams, port) => {
     });
     client.on('data', function (data) {
       try {
+        console.log('Received data', data);
+        console.log('For telegram: ', telegrams[telegramCounter - 1]);
         if (telegramCounter <= numberOfTelegrams) {
           console.log('Sending telegram...', telegrams[telegramCounter]);
           client.write(new Uint8Array(telegrams[telegramCounter]));
@@ -132,7 +134,7 @@ const billboardMessageConstructor = (message) => {
     ...end,
   ];
   messages.push(message);
-  const empty1 = [STX, 0x06, 0x08, 0x07, 0x07, ...end];
+  const empty1 = [STX, 0x0b, 0x08, 0x07, 0x07, ...end];
   messages.push(empty1);
   const empty2 = [STX, 0x0c, 0x07, 0x07, 0x07, ...end];
   messages.push(empty2);
