@@ -63,13 +63,13 @@ const sendTelegram = async (telegram, port) => {
 };
 
 const sendMessageToBillboards = async (telegrams) => {
-  console.log('telegrams', telegrams);
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
       let messageResult = [];
-      for (let j = 0; j < telegrams.length; j++) {
-        let result = await sendTelegram(telegrams[j], PORTS[i]);
+      for (var j = 0; j < telegrams.length; j++) {
+        const telegram = telegrams[j];
+        let result = await sendTelegram(telegram, PORTS[i]);
         messageResult.push(result);
       }
       results[PORTS[i]] = messageResult;
