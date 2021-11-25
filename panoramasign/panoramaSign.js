@@ -20,19 +20,18 @@ const temperatureTelegramConstructor = async () => {
 
 const sendTelegram = async (telegram, port, j) => {
   return new Promise((resolve, reject) => {
-    let client = net.Socket();
-    client.connect(port, HOST, function () {
+    let client = net.createConnection({ port: port, host: HOST }, () => {
       console.log('Connected to ' + HOST + ':' + port);
-      console.log('SENT', telegram, j);
+      console.log('SENT', telegram, `j: ${j}`);
       client.write(telegram);
     });
     client.on('error', function (error) {
       console.log('FAILURE', `${error}`);
-      client.destroy();
+      client.end();
       reject(error);
     });
     client.on('data', function (data) {
-      console.log('Received: ' + data, j);
+      console.log('Received: ' + [...data], `j: ${j}`);
       try {
         console.log('Ending');
         client.end();
@@ -41,6 +40,9 @@ const sendTelegram = async (telegram, port, j) => {
         client.destroy();
         reject(error);
       }
+    });
+    client.on('end', () => {
+      console.log('Disconnected from ' + HOST + ':' + port);
     });
   });
 };
