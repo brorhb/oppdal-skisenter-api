@@ -49,6 +49,7 @@ const sendMessageTelegram = async (telegrams, port) => {
     let telegramCounter = 0;
     let client = net.createConnection({ port: port, host: HOST }, () => {
       console.log('Connected to ' + HOST + ':' + port);
+      console.log('Sending telegram...', telegrams[telegramCounter]);
       client.write(new Uint8Array(telegrams[telegramCounter]));
       telegramCounter++;
     });
@@ -60,7 +61,8 @@ const sendMessageTelegram = async (telegrams, port) => {
     });
     client.on('data', function (data) {
       try {
-        if (telegramCounter < numberOfTelegrams) {
+        if (telegramCounter <= numberOfTelegrams) {
+          console.log('Sending telegram...', telegrams[telegramCounter]);
           client.write(new Uint8Array(telegrams[telegramCounter]));
           telegramCounter++;
         } else {
