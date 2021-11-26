@@ -84,15 +84,16 @@ fastify.route({
     let color = req.body;
     try {
       let telegram = await panoramaSign.avalancheTelegramConstructor(color);
-      let result = await panoramaSign.updatePanoramaSign([telegram]);
+      let result;
+      if (process.env.NODE_ENV !== 'development') {
+        result = await panoramaSign.updatePanoramaSign([telegram]);
+      }
       res
         .code(200)
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
           success: true,
-          decodedTelegram: new TextDecoder('utf-8')
-            .decode(new Uint8Array(telegram))
-            .trim(),
+          telegram: telegram,
           results: result,
         });
     } catch (error) {

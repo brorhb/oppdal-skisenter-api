@@ -18,6 +18,7 @@ const temperatureTelegramConstructor = async () => {
   return [STX, CMD, CRC, ETX];
 };
 
+/// Deprecated
 const sendTelegramLegacy = async (telegram, port) => {
   return new Promise((resolve, reject) => {
     let client = net.createConnection({ port: port, host: HOST }, () => {
@@ -179,7 +180,8 @@ const updatePanoramaSign = async (telegrams) => {
   return results;
 };
 
-const avalancheTelegramConstructor = async (color) => {
+const avalancheTelegramConstructor = (color) => {
+  color = parseInt(color);
   const CMD = 0x33;
   let data;
   switch (color) {
