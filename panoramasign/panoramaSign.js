@@ -18,7 +18,7 @@ const temperatureTelegramConstructor = async () => {
   return [STX, CMD, CRC, ETX];
 };
 
-const sendTelegram = async (telegram, port) => {
+const sendTelegramLegacy = async (telegram, port) => {
   return new Promise((resolve, reject) => {
     let client = net.createConnection({ port: port, host: HOST }, () => {
       client.write(telegram);
@@ -43,14 +43,15 @@ const sendTelegram = async (telegram, port) => {
   });
 };
 
-const sendMessageTelegram = async (telegrams, port) => {
+const sendTelegram = async (telegrams, port) => {
   return new Promise((resolve, reject) => {
+    telegrams = telegrams.map((telegram) => new Uint8Array(telegram));
     let numberOfTelegrams = telegrams.length - 1;
     let telegramCounter = 0;
     let client = net.createConnection({ port: port, host: HOST }, () => {
       console.log('Connected to ' + HOST + ':' + port);
       console.log('Sending telegram...', telegrams[telegramCounter]);
-      client.write(new Uint8Array(telegrams[telegramCounter]));
+      client.write(telegrams[telegramCounter]);
       telegramCounter++;
     });
     client.on('error', function (error) {
@@ -65,7 +66,7 @@ const sendMessageTelegram = async (telegrams, port) => {
         console.log('For telegram: ', telegrams[telegramCounter - 1]);
         if (telegramCounter <= numberOfTelegrams) {
           console.log('Sending telegram...', telegrams[telegramCounter]);
-          client.write(new Uint8Array(telegrams[telegramCounter]));
+          client.write(telegrams[telegramCounter]);
           telegramCounter++;
         } else {
           resolve(telegrams);
@@ -90,7 +91,7 @@ const sendMessageToBillboards = async (telegrams) => {
   for (let i = 0; i < PORTS.length; i++) {
     try {
       var messageResult = [];
-      messageResult = await sendMessageTelegram(telegrams, PORTS[i]);
+      messageResult = await sendTelegram(telegrams, PORTS[i]);
       results[PORTS[i]] = messageResult;
     } catch (error) {
       results[PORTS[i]] = error;
@@ -164,11 +165,11 @@ const billboardMessageConstructor = (message) => {
   return messages;
 };
 
-const updatePanoramaSign = async (telegram) => {
+const updatePanoramaSign = async (telegrams) => {
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
     try {
-      let result = await sendTelegram(new Uint8Array(telegram), PORTS[i]);
+      let result = await sendTelegram(telegrams, PORTS[i]);
       results[PORTS[i]] = result;
     } catch (error) {
       results[PORTS[i]] = error;

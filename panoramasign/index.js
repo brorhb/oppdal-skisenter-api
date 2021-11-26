@@ -5,7 +5,7 @@ const panoramaSign = require('./panoramaSign');
 
 fastify.get('/temp', async (request, reply) => {
   let telegram = await panoramaSign.temperatureTelegramConstructor();
-  let result = await panoramaSign.updatePanoramaSign(telegram);
+  let result = await panoramaSign.updatePanoramaSign([telegram]);
   reply.send(result);
 });
 
@@ -19,10 +19,8 @@ fastify.route({
       let telegrams = await panoramaSign.relaysTelegramConstructor(items);
       let results = [];
       if (process.env.NODE_ENV !== 'development') {
-        for (let i = 0; i < telegrams.length; i++) {
-          let result = await panoramaSign.updatePanoramaSign(telegrams[i]);
-          results.push(result);
-        }
+        let result = await panoramaSign.updatePanoramaSign(telegrams);
+        results.push(result);
       }
       console.log('results', results);
       res
@@ -86,7 +84,7 @@ fastify.route({
     let color = req.body;
     try {
       let telegram = await panoramaSign.avalancheTelegramConstructor(color);
-      let result = await panoramaSign.updatePanoramaSign(telegram);
+      let result = await panoramaSign.updatePanoramaSign([telegram]);
       res
         .code(200)
         .header('Content-Type', 'application/json; charset=utf-8')
@@ -116,7 +114,7 @@ fastify.route({
   handler: async (req, res) => {
     try {
       let telegram = await panoramaSign.setAllRelaysTelegramConstructor(false);
-      let result = await panoramaSign.updatePanoramaSign(telegram);
+      let result = await panoramaSign.updatePanoramaSign([telegram]);
       res
         .code(200)
         .header('Content-Type', 'application/json; charset=utf-8')
