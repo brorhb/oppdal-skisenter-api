@@ -18,65 +18,29 @@ const temperatureTelegramConstructor = async () => {
   return [STX, CMD, CRC, ETX];
 };
 
-/// Deprecated
-const sendTelegramLegacy = async (telegram, port) => {
-  return new Promise((resolve, reject) => {
-    let client = net.createConnection({ port: port, host: HOST }, () => {
-      client.write(telegram);
-    });
-    client.on('error', function (error) {
-      console.log('FAILURE', `${error}`);
-      client.end();
-      reject(error);
-    });
-    client.on('data', function (data) {
-      try {
-        client.end();
-        resolve([...data]);
-      } catch (error) {
-        client.destroy();
-        reject(error);
-      }
-    });
-    client.on('end', () => {
-      console.log('Disconnected from ' + HOST + ':' + port);
-    });
-  });
-};
-
 const sendTelegram = async (telegrams, port) => {
   return new Promise((resolve, reject) => {
     telegrams = telegrams.map((telegram) => new Uint8Array(telegram));
     let numberOfTelegrams = telegrams.length - 1;
     let telegramCounter = 0;
     let client = net.createConnection({ port: port, host: HOST }, () => {
-      console.log('Connected to ' + HOST + ':' + port);
-      console.log('Sending telegram...', telegrams[telegramCounter]);
       client.write(telegrams[telegramCounter]);
       telegramCounter++;
     });
     client.on('error', function (error) {
-      console.log('FAILURE', `${error}`);
-      console.log('Ending');
       client.end();
       reject(error);
     });
     client.on('data', function (data) {
       try {
-        console.log('Received data', data);
-        console.log('For telegram: ', telegrams[telegramCounter - 1]);
         if (telegramCounter <= numberOfTelegrams) {
-          console.log('Sending telegram...', telegrams[telegramCounter]);
           client.write(telegrams[telegramCounter]);
           telegramCounter++;
         } else {
           resolve(telegrams);
-          console.log('Ending');
-          resolve([...data]);
           client.end();
         }
       } catch (error) {
-        console.log('Ending');
         reject(error);
         client.end();
       }
