@@ -23,6 +23,7 @@ const sendTelegram = async (telegrams, port) => {
     telegrams = telegrams.map((telegram) => new Uint8Array(telegram));
     let numberOfTelegrams = telegrams.length - 1;
     let telegramCounter = 0;
+    let responses = [];
     let client = net.createConnection({ port: port, host: HOST }, () => {
       client.write(telegrams[telegramCounter]);
       telegramCounter++;
@@ -32,12 +33,16 @@ const sendTelegram = async (telegrams, port) => {
       reject(error);
     });
     client.on('data', function (data) {
+      responses.push([...data]);
       try {
         if (telegramCounter <= numberOfTelegrams) {
           client.write(telegrams[telegramCounter]);
           telegramCounter++;
         } else {
-          resolve(telegrams);
+          resolve({
+            sent: telegrams,
+            responses,
+          });
           client.end();
         }
       } catch (error) {
@@ -66,7 +71,6 @@ const sendMessageToBillboards = async (telegrams) => {
 };
 
 const billboardMessageConstructor = (message, time) => {
-  console.log(message);
   let messages = [];
   const end = [0x01, 0x04];
   const setup1 = [

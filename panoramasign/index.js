@@ -6,6 +6,7 @@ const panoramaSign = require('./panoramaSign');
 fastify.get('/temp', async (request, reply) => {
   let telegram = await panoramaSign.temperatureTelegramConstructor();
   let result = await panoramaSign.updatePanoramaSign([telegram]);
+  result = Object.values(result);
   reply.send(result);
 });
 
