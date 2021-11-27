@@ -197,7 +197,7 @@ const ledStates = {
   r: 0x72,
   1: 0x67,
   2: 0x72,
-  3: 0x72,
+  3: 0x61,
 };
 const updateBillboards = (items) => {
   return new Promise(async (resolve, reject) => {
