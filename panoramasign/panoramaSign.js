@@ -94,7 +94,7 @@ const billboardMessageConstructor = (message, time) => {
     STX,
     0x0a, // CMD
     0x08, // time message is viewed
-    0x08, // Char set aka font size 7 is halfsize 8 is fullsize
+    0x06, // Char set aka font size 7 is halfsize 8 is fullsize
     0x07, // fixed
     ...message.split('').map((value) => characterToHex[value]),
     ...end,
