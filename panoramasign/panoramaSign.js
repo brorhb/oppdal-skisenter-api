@@ -65,7 +65,7 @@ const sendMessageToBillboards = async (telegrams) => {
   return results;
 };
 
-const billboardMessageConstructor = (message) => {
+const billboardMessageConstructor = (message, time) => {
   let messages = [];
   const end = [0x01, 0x04];
   const setup1 = [
@@ -94,7 +94,7 @@ const billboardMessageConstructor = (message) => {
     STX,
     0x0a, // CMD
     0x08, // time message is viewed
-    0x07, // Char set aka font size
+    0x08, // Char set aka font size 7 is halfsize 8 is fullsize
     0x07, // fixed
     ...message.split('').map((value) => characterToHex[value]),
     ...end,
@@ -113,8 +113,6 @@ const billboardMessageConstructor = (message) => {
   const setScrollSpeed = [STX, 0x20, 0x14, 0x00, 0x00, ...end];
   messages.push(setScrollSpeed);
   const today = new Date();
-  const time =
-    today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
   const setTime = [
     STX,
     0x22,

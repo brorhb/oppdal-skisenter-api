@@ -58,10 +58,8 @@ module.exports = function (fastify, opts, done) {
     url: '/message',
     preValidation: authMiddleware,
     handler: async (req, res) => {
-      console.log(req.body);
       const token = req.headers.authorization;
       let url = process.env.DO_URL;
-      console.log('TRYING TO PATCH URL', url + '/message', req.body);
       try {
         let result = await fetch(url + '/message', {
           method: 'PATCH',
@@ -69,7 +67,6 @@ module.exports = function (fastify, opts, done) {
           headers: { Authorization: token, 'Content-Type': 'application/json' },
         });
         let json = await result.json();
-        console.log(json);
         res
           .code(200)
           .header('Content-Type', 'application/json; charset=utf-8')
@@ -111,7 +108,6 @@ module.exports = function (fastify, opts, done) {
         })
           .then((data) => data.json())
           .then((data) => {
-            console.log(data);
             res
               .code(200)
               .header('Content-Type', 'application/json; charset=utf-8')
@@ -121,7 +117,6 @@ module.exports = function (fastify, opts, done) {
               });
           })
           .catch((error) => {
-            console.log(error);
             res
               .code(500)
               .header('Content-Type', 'application/json; charset=utf-8')

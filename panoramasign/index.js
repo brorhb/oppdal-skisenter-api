@@ -48,10 +48,13 @@ fastify.route({
   url: '/message',
   preValidation: authMiddleware,
   handler: async (req, res) => {
-    let { message } =
+    let { message, time } =
       process.env.NODE_ENV === 'production' ? req.body : JSON.parse(req.body);
     try {
-      let telegrams = await panoramaSign.billboardMessageConstructor(message);
+      let telegrams = await panoramaSign.billboardMessageConstructor(
+        message,
+        time
+      );
       let results = {};
       if (process.env.NODE_ENV !== 'development') {
         results = await panoramaSign.sendMessageToBillboards(telegrams);
