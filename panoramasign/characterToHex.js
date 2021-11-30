@@ -1,4 +1,4 @@
-module.exports = {
+const characterToHex = {
   A: 0x41,
   B: 0x42,
   C: 0x43,
@@ -77,4 +77,14 @@ module.exports = {
   '<': 0x3c,
   ':': 0x3a,
   '#': 0x23,
+};
+
+const hexToCharacter = Object.keys(characterToHex).reduce((acc, key) => {
+  acc[characterToHex[key]] = key;
+  return acc;
+}, {});
+
+module.exports = {
+  characterToHex,
+  hexToCharacter,
 };

@@ -8,7 +8,7 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "panorama-dev": "nodemon panoramasign/index.js",
-    "panoramaserver": "pm2 start panoramasign/index.js"
+    "panoramaserver": "pm2 start panoramasign/index.js --watch --ignore-watch='node_modules'"
   },
   "engines": {
     "node": "14.13.1"
