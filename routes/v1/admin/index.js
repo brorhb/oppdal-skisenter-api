@@ -49,7 +49,7 @@ module.exports = function (fastify, opts, done) {
           'INSERT INTO users SET username = ?, password = ?, role = ?',
           [user.username, user.password, user.role],
           (err, result) => {
-            if (err) reject(false);
+            if (err) reject(err);
             resolve(result);
           }
         );

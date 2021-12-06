@@ -4,6 +4,42 @@ const connection = require("../../../connection")
 
 module.exports = function (fastify, opts, done) {
   fastify.route({
+    method: 'PATCH',
+    url: '/status',
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      const { type } = req.body;
+      let status_type = 2;
+      if (type == 'open') status_type = 1;
+      try {
+        await new Promise((resolve, reject) => {
+          connection.query(
+            `
+          UPDATE
+            facilities
+          SET
+            status = ?
+          `,
+            [status_type],
+            (error, result) => {
+              if (error) reject(error);
+              resolve(result);
+            }
+          );
+        });
+      } catch (err) {
+        return {
+          success: false,
+          message: err,
+        };
+      }
+      return {
+        success: true,
+      };
+    },
+  });
+
+  fastify.route({
     method: "PATCH",
     url: "/:id",
     preValidation: authMiddleware,

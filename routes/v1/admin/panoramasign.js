@@ -13,7 +13,7 @@ module.exports = function (fastify, opts, done) {
         let tracks = await getDataFromTable('tracks');
         let facilities = await getDataFromTable('facilities');
 
-        let items = [...lifts, ...tracks];
+        let items = [...lifts, ...tracks, ...facilities];
         let url = process.env.DO_URL;
         fetch(url + '/relays', {
           method: 'PATCH',
