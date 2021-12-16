@@ -148,6 +148,8 @@ module.exports = function (fastify, opts, done) {
         ),
       ]);
 
+      results = results.filter((station) => !station.error);
+
       if (weatherCache?.result) {
         const cache = weatherCache.result;
         let inCache = [];
