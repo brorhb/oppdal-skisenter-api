@@ -30,19 +30,19 @@ module.exports = function (fastify, opts, done) {
         status: status_types.find((status) => status.id === track.status)?.name,
         lifts: track.lifts
           ? JSON.parse(track.lifts).map((id) =>
-              lifts.find((lift) => lift.id === id)
-            )
+            lifts.find((lift) => lift.id === id)
+          )
           : [],
         connected_tracks: track.connected_tracks
           ? JSON.parse(track.connected_tracks).map((id) =>
-              tracks.find((t) => t.id === id)
-            )
+            tracks.find((t) => t.id === id)
+          )
           : [],
         coords: coord
           ? {
-              x: x,
-              y: y,
-            }
+            x: x,
+            y: y,
+          }
           : null,
       };
     });
@@ -70,9 +70,9 @@ module.exports = function (fastify, opts, done) {
         type: type,
         coords: coord
           ? {
-              x: x,
-              y: y,
-            }
+            x: x,
+            y: y,
+          }
           : null,
       };
     });
@@ -245,17 +245,6 @@ module.exports = function (fastify, opts, done) {
     }
   });
 
-  fastify.get('/update-table', async () => {
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 300);
-    });
-    return {
-      message: 'sucessfully emulated table update',
-    };
-  });
-
   fastify.get('/zones', async () => {
     let zones = await getDataFromTable('zones');
     return zones.map((item) => {
@@ -314,7 +303,7 @@ function createDatesForAvalancheWarning() {
   return dates;
 }
 
-function formatDate(date){
+function formatDate(date) {
   let year = date.getFullYear();
   let month = date.getMonth();
   month++;
