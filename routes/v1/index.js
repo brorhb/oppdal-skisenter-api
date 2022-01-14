@@ -72,13 +72,24 @@ module.exports = function (fastify, opts, done) {
   fastify.get('/daily-unique-users', async (request, reply) => {
     const result = await new Promise((resolve, reject) => {
       connection.query(`
-        SELECT COUNT(DISTINCT uuid) from analytics WHERE time LIKE CONCAT("%", CURRENT_DATE, "%");
+        SELECT DISTINCT uuid, referrer, useragent from analytics WHERE time LIKE CONCAT("%", CURRENT_DATE, "%");
       `, (error, result) => {
         if (error) reject(error);
         resolve(result);
       })
     })
-    reply.code(200).send(result[0]['COUNT(DISTINCT uuid)']);
+    const android = result.filter((item) => item.useragent.includes('Android'));
+    const iPhones = result.filter((item) => item.useragent.includes('iPhone'));
+    const iPads = result.filter((item) => item.useragent.includes('iPad'));
+    let response = {
+      total: result.length,
+      iPhones: iPhones.length,
+      iPads: iPads.length,
+      android: android.length,
+      other: result.length - (iPhones.length + iPads.length + android.length),
+      cameFromMainSite: result.filter((item) => item.referrer.includes("oppdalskisenter")).length,
+    }
+    reply.code(200).send(response);
   })
 
   fastify.get('/lifts', async () => {
