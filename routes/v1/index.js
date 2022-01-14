@@ -49,6 +49,24 @@ module.exports = function (fastify, opts, done) {
     return tracks;
   });
 
+  fastify.post('/analytics', async (request, reply) => {
+    const {
+      referrer,
+      url,
+      uuid
+    } = request.body;
+    const userAgent = request.headers['user-agent'];
+    await new Promise((resolve, reject) => {
+      connection.query(`
+        INSERT INTO analytics (uuid, site, referrer, useragent) VALUES (?, ?, ?, ?)
+      `, [uuid, url, referrer, userAgent], (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      })
+    })
+    return
+  })
+
   fastify.get('/lifts', async () => {
     let lifts = await getDataFromTable('lifts');
     let status_types = await getDataFromTable('status_types');
