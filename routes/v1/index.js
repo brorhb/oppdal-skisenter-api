@@ -54,17 +54,19 @@ module.exports = function (fastify, opts, done) {
       referrer,
       url,
       uuid
-    } = request.body;
+    } = JSON.parse(request.body);
     const userAgent = request.headers['user-agent'];
-    await new Promise((resolve, reject) => {
-      connection.query(`
+    if (typeof uuid === 'string' && uuid.length > 0) {
+      await new Promise((resolve, reject) => {
+        connection.query(`
         INSERT INTO analytics (uuid, site, referrer, useragent) VALUES (?, ?, ?, ?)
       `, [uuid, url, referrer, userAgent], (error, result) => {
-        if (error) reject(error);
-        resolve(result);
+          if (error) reject(error);
+          resolve(result);
+        })
       })
-    })
-    return
+    }
+    reply.code(200).send();
   })
 
   fastify.get('/lifts', async () => {
