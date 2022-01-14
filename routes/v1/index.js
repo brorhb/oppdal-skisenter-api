@@ -69,6 +69,18 @@ module.exports = function (fastify, opts, done) {
     reply.code(200).send();
   })
 
+  fastify.get('/daily-unique-users', async (request, reply) => {
+    const result = await new Promise((resolve, reject) => {
+      connection.query(`
+        SELECT COUNT(DISTINCT uuid) from analytics WHERE time LIKE CONCAT("%", CURRENT_DATE, "%");
+      `, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      })
+    })
+    reply.code(200).send(result[0]['COUNT(DISTINCT uuid)']);
+  })
+
   fastify.get('/lifts', async () => {
     let lifts = await getDataFromTable('lifts');
     let status_types = await getDataFromTable('status_types');
