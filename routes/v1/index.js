@@ -201,46 +201,15 @@ module.exports = function (fastify, opts, done) {
 
       results = results.filter((station) => !station.error);
 
-      if (weatherCache?.result) {
-        const cache = weatherCache.result;
-        let inCache = [];
-        for (var i = 0; i < results.length; i++) {
-          let item = results[i];
-          if (cache.find((station) => station.stationId === item.stationId)) {
-            let index = cache.findIndex(
-              (station) => station.stationId === item.stationId
-            );
-            inCache.push({
-              index: index,
-              item: item,
-            });
-          }
-        }
-        let newCache = cache;
-        inCache.forEach((item) => {
-          newCache[item.index] = item.item;
-        });
-
-        weatherCache = {
-          dateTime: Date.now(),
-          result: newCache.map((station) => {
-            station['zone'] = weatherStationZones.find(
-              (item) => item.station_id === station.stationId
-            )?.zone_id;
-            return station;
-          }),
-        };
-      } else {
-        weatherCache = {
-          dateTime: Date.now(),
-          result: results.map((station) => {
-            station['zone'] = weatherStationZones.find(
-              (item) => item.station_id === station.stationId
-            )?.zone_id;
-            return station;
-          }),
-        };
-      }
+      weatherCache = {
+        dateTime: Date.now(),
+        result: results.map((station) => {
+          station['zone'] = weatherStationZones.find(
+            (item) => item.station_id === station.stationId
+          )?.zone_id;
+          return station;
+        }),
+      };
       return weatherCache.result;
     }
   });
