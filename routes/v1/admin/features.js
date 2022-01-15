@@ -32,7 +32,7 @@ module.exports = function (fastify, opts, done) {
         return {
           "success": true
         }
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -47,10 +47,10 @@ module.exports = function (fastify, opts, done) {
     url: "/add",
     handler: async (req, res) => {
       try {
-        let features = await getDataFromTable("features")
+        let features = await getDataFromTable("features", true)
         if (!features) features = []
         const feature = req.body
-        const newId = features.length > 0 ? features[features.length-1].id + 1 : 1
+        const newId = features.length > 0 ? features[features.length - 1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO features (id, name, position, track, type, difficulty, status)
@@ -66,7 +66,7 @@ module.exports = function (fastify, opts, done) {
             "id": newId
           }
         }
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -94,7 +94,7 @@ module.exports = function (fastify, opts, done) {
           "message": result
         }
       }
-      catch(err) {
+      catch (err) {
         res.code = 500
         return {
           "success": false,

@@ -27,14 +27,14 @@ module.exports = function (fastify, opts, done) {
             zone = ?
           WHERE id = ?
           `,
-          [track.name, JSON.stringify(track.connected_tracks), track.season, track.status, track["length"], track.difficulty, JSON.stringify(track.lifts), track.zone, trackId],
-          (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+            [track.name, JSON.stringify(track.connected_tracks), track.season, track.status, track["length"], track.difficulty, JSON.stringify(track.lifts), track.zone, trackId],
+            (error, result) => {
+              if (error) reject(error)
+              resolve(result)
+            })
         })
         await new Promise(async (resolve, reject) => {
-          const coords = await getDataFromTable("track_coord_in_map")
+          const coords = await getDataFromTable("track_coord_in_map", true)
           if (coords.find((item) => item.track == trackId)) {
             connection.query(`
               UPDATE
@@ -43,9 +43,9 @@ module.exports = function (fastify, opts, done) {
                 coord = ?
               WHERE track = ?;
               `, [track.coords, trackId], (error, result) => {
-                if (error) reject(error)
-                resolve(result)
-              }
+              if (error) reject(error)
+              resolve(result)
+            }
             )
           } else {
             connection.query(`
@@ -55,7 +55,7 @@ module.exports = function (fastify, opts, done) {
             `, [track.coords, track.id])
           }
         })
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -72,9 +72,9 @@ module.exports = function (fastify, opts, done) {
     url: "/status",
     preValidation: authMiddleware,
     handler: async (req, res) => {
-      const {type} = req.body
+      const { type } = req.body
       let status_type = 2;
-      if(type == "open") status_type = 1
+      if (type == "open") status_type = 1
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
@@ -82,13 +82,13 @@ module.exports = function (fastify, opts, done) {
             tracks
           SET
             status = ?
-          `,[status_type],
-          (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+          `, [status_type],
+            (error, result) => {
+              if (error) reject(error)
+              resolve(result)
+            })
         })
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -105,11 +105,11 @@ module.exports = function (fastify, opts, done) {
     url: "/status-zone",
     preValidation: authMiddleware,
     handler: async (req, res) => {
-      const {type, zone} = req.body
-      
+      const { type, zone } = req.body
+
       let status_type = 3;
-      if(type == "open") status_type = 1
-      else if(type == "closed") status_type = 2
+      if (type == "open") status_type = 1
+      else if (type == "closed") status_type = 2
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
@@ -119,13 +119,13 @@ module.exports = function (fastify, opts, done) {
             status = ?
           WHERE
             zone = ?
-          `,[status_type, zone],
-          (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+          `, [status_type, zone],
+            (error, result) => {
+              if (error) reject(error)
+              resolve(result)
+            })
         })
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -136,16 +136,16 @@ module.exports = function (fastify, opts, done) {
       }
     }
   })
-  
+
 
   fastify.route({
     method: "POST",
     preValidation: authMiddleware,
     url: "/add",
     handler: async (req, res) => {
-      const tracks = await getDataFromTable("tracks")
+      const tracks = await getDataFromTable("tracks", true)
       const track = req.body
-      const newId = tracks.length > 0 ? tracks[tracks.length-1].id + 1 : 1
+      const newId = tracks.length > 0 ? tracks[tracks.length - 1].id + 1 : 1
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
@@ -157,7 +157,7 @@ module.exports = function (fastify, opts, done) {
             resolve(result)
           })
         })
-      } catch(err) {
+      } catch (err) {
         res.code = 500
         return {
           "success": false,
@@ -198,7 +198,7 @@ module.exports = function (fastify, opts, done) {
           "message": result
         }
       }
-      catch(err) {
+      catch (err) {
         res.code = 500
         return {
           "success": false,

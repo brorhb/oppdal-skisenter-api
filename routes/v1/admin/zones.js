@@ -27,7 +27,7 @@ module.exports = function (fastify, opts, done) {
         return {
           "success": true
         }
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -42,9 +42,9 @@ module.exports = function (fastify, opts, done) {
     url: "/add",
     handler: async (req, res) => {
       try {
-        const zones = await getDataFromTable("zone")
+        const zones = await getDataFromTable("zone", true)
         const zone = req.body
-        const newId = zones.length > 0 ? zones[zones.length-1].id + 1 : 1
+        const newId = zones.length > 0 ? zones[zones.length - 1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
@@ -61,7 +61,7 @@ module.exports = function (fastify, opts, done) {
             "id": newId
           }
         }
-      } catch(err) {
+      } catch (err) {
         res.code = 500
         return {
           "success": false,
@@ -90,7 +90,7 @@ module.exports = function (fastify, opts, done) {
           "message": result
         }
       }
-      catch(err) {
+      catch (err) {
         res.code = 500
         return {
           "success": false,

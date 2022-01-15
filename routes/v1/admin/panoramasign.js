@@ -9,9 +9,9 @@ module.exports = function (fastify, opts, done) {
     handler: async (req, res) => {
       const token = req.headers.authorization;
       try {
-        let lifts = await getDataFromTable('lifts');
-        let tracks = await getDataFromTable('tracks');
-        let facilities = await getDataFromTable('facilities');
+        let lifts = await getDataFromTable('lifts', true);
+        let tracks = await getDataFromTable('tracks', true);
+        let facilities = await getDataFromTable('facilities', true);
 
         let items = [...lifts, ...tracks, ...facilities];
         let url = process.env.DO_URL;

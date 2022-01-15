@@ -37,7 +37,7 @@ module.exports = function (fastify, opts, done) {
         })
         if (lift.coords) {
           await new Promise(async (resolve, reject) => {
-            const coords = await getDataFromTable("lift_coord_in_map")
+            const coords = await getDataFromTable("lift_coord_in_map", true)
             if (coords.find((item) => item.lift == liftId)) {
               connection.query(`
                 UPDATE
@@ -46,9 +46,9 @@ module.exports = function (fastify, opts, done) {
                   coord = ?
                 WHERE lift = ?;
                 `, [lift.coords, liftId], (error, result) => {
-                  if (error) reject(error)
-                  resolve(result)
-                }
+                if (error) reject(error)
+                resolve(result)
+              }
               )
             } else {
               connection.query(`
@@ -56,9 +56,9 @@ module.exports = function (fastify, opts, done) {
                   lift_coord_in_map (coord, lift)
                 VALUES (?, ?)
               `), [lift.coords, lift.id], (error, result) => {
-                if (error) reject(error)
-                resolve(result)
-              }
+                  if (error) reject(error)
+                  resolve(result)
+                }
             }
           })
         }
@@ -66,7 +66,7 @@ module.exports = function (fastify, opts, done) {
         return {
           "success": true
         }
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -79,9 +79,9 @@ module.exports = function (fastify, opts, done) {
     url: "/status",
     preValidation: authMiddleware,
     handler: async (req, res) => {
-      const {type} = req.body
+      const { type } = req.body
       let status_type = 2;
-      if(type == "open") status_type = 1
+      if (type == "open") status_type = 1
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
@@ -89,13 +89,13 @@ module.exports = function (fastify, opts, done) {
             lifts
           SET
             status = ?
-          `,[status_type],
-          (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+          `, [status_type],
+            (error, result) => {
+              if (error) reject(error)
+              resolve(result)
+            })
         })
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -111,10 +111,10 @@ module.exports = function (fastify, opts, done) {
     url: "/status-zone",
     preValidation: authMiddleware,
     handler: async (req, res) => {
-      const {type, zone} = req.body
+      const { type, zone } = req.body
       let status_type = 3;
-      if(type == "open") status_type = 1
-      else if(type == "closed") status_type = 2
+      if (type == "open") status_type = 1
+      else if (type == "closed") status_type = 2
       try {
         await new Promise((resolve, reject) => {
           connection.query(`
@@ -124,13 +124,13 @@ module.exports = function (fastify, opts, done) {
             status = ?
           WHERE
             zone = ?
-          `,[status_type, zone],
-          (error, result) => {
-            if (error) reject(error)
-            resolve(result)
-          })
+          `, [status_type, zone],
+            (error, result) => {
+              if (error) reject(error)
+              resolve(result)
+            })
         })
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -148,9 +148,9 @@ module.exports = function (fastify, opts, done) {
     url: "/add",
     handler: async (req, res) => {
       try {
-        const lifts = await getDataFromTable("lifts")
+        const lifts = await getDataFromTable("lifts", true)
         const lift = req.body
-        const newId = lifts.length > 0 ? lifts[lifts.length-1].id + 1 : 1
+        const newId = lifts.length > 0 ? lifts[lifts.length - 1].id + 1 : 1
         await new Promise((resolve, reject) => {
           connection.query(`
           INSERT INTO
@@ -167,7 +167,7 @@ module.exports = function (fastify, opts, done) {
             "id": newId
           }
         }
-      } catch(err) {
+      } catch (err) {
         res.code = 500
         return {
           "success": false,
@@ -202,7 +202,7 @@ module.exports = function (fastify, opts, done) {
           "message": result
         }
       }
-      catch(err) {
+      catch (err) {
         res.code = 500
         return {
           "success": false,

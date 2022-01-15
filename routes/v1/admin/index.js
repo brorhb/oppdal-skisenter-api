@@ -6,7 +6,7 @@ const authMiddleware = require('../../../helpers/authMiddleware')
 
 const createHash = (password) => {
   return new Promise((resolve, reject) => {
-    bcrypt.hash(password, 10, function(err, hash) {
+    bcrypt.hash(password, 10, function (err, hash) {
       if (err) reject(err)
       resolve(hash)
     });
@@ -14,10 +14,10 @@ const createHash = (password) => {
 }
 const compareHash = (plainText, hash) => {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(plainText, hash, function(err, result) {
+    bcrypt.compare(plainText, hash, function (err, result) {
       if (err) reject(false)
       resolve(result)
-  });
+    });
   })
 }
 
@@ -109,7 +109,7 @@ module.exports = function (fastify, opts, done) {
   fastify.post('/login', async (req, res) => {
     const password = req.body.password;
     const username = req.body.username;
-    const users = await getDataFromTable('users');
+    const users = await getDataFromTable('users', true);
     const user = users.find(
       (item) =>
         item.username === username && compareHash(password, item.password)

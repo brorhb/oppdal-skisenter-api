@@ -1,4 +1,3 @@
-const getDataFromTable = require('../../../helpers/getDatabaseTable')
 const authMiddleware = require('../../../helpers/authMiddleware')
 const connection = require("../../../connection")
 
@@ -27,7 +26,7 @@ module.exports = function (fastify, opts, done) {
         return {
           "success": true
         }
-      } catch(err) {
+      } catch (err) {
         return {
           "success": false,
           "message": err
@@ -81,7 +80,7 @@ module.exports = function (fastify, opts, done) {
         return {
           "success": true
         }
-      } catch(err) {
+      } catch (err) {
         res.code = 500
         return {
           "success": false,
