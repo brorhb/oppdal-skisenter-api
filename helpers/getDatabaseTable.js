@@ -8,7 +8,7 @@ module.exports = getDataFromTable = async (tableName, updateCache = false) => {
     return cache[tableName].data
   } else {
     const data = await new Promise((resolve, reject) => {
-      connection.query(`SELECT * FROM ${tableName};`, (err, result) => {
+      connection.query(`SELECT * FROM ${tableName} WHERE is_deleted = 0;`, (err, result) => {
         if (err) {
           console.log(err)
           reject(err)
