@@ -61,7 +61,7 @@ module.exports = function (fastify, opts, done) {
     if (typeof uuid === 'string' && uuid.length > 0) {
       await new Promise((resolve, reject) => {
         connection.query(`
-        INSERT INTO analytics (uuid, site, referrer, useragent) VALUES (?, ?, ?, ?)
+        INSERT INTO analytics_new (uuid, site, referrer, useragent) VALUES (?, ?, ?, ?)
       `, [uuid, url, referrer, userAgent], (error, result) => {
           if (error) reject(error);
           resolve(result);
@@ -74,7 +74,7 @@ module.exports = function (fastify, opts, done) {
   fastify.get('/daily-unique-users', async (request, reply) => {
     const result = await new Promise((resolve, reject) => {
       connection.query(`
-        SELECT DISTINCT uuid, referrer, useragent from analytics WHERE time LIKE CONCAT("%", CURRENT_DATE, "%");
+        SELECT DISTINCT uuid, referrer, useragent from analytics_new WHERE time LIKE CONCAT("%", CURRENT_DATE, "%");
       `, (error, result) => {
         if (error) reject(error);
         resolve(result);
