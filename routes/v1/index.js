@@ -12,7 +12,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/tracks', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let tracks = await getDataFromTable('tracks', updateCache);
     let lifts = await getDataFromTable('lifts', updateCache);
     let difficulty_types = await getDataFromTable('difficulty', updateCache);
@@ -128,7 +128,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/features', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let features = await getDataFromTable('features', updateCache);
     let feature_types = await getDataFromTable('feature_types', updateCache);
     let tracks = await getDataFromTable('tracks', updateCache);
@@ -151,7 +151,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/facilities', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let facilities = await getDataFromTable('facilities', updateCache);
     let facility_types = await getDataFromTable('facilities_types', updateCache);
     let status_types = await getDataFromTable('status_types', updateCache);
@@ -267,7 +267,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/zones', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let zones = await getDataFromTable('zones', updateCache);
     return zones.map((item) => {
       return {
@@ -278,7 +278,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/cameras', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let cameras = await getDataFromTable('camera', updateCache);
     return cameras.map((item) => {
       return item;
@@ -287,7 +287,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/difficulty', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let difficulty = await getDataFromTable('difficulty', updateCache);
     return difficulty.map((item) => {
       return {
@@ -298,7 +298,7 @@ module.exports = function (fastify, opts, done) {
 
   fastify.get('/lift-types', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
-    const updateCache = typeof token !== 'undefined' && token.lenght > 0
+    const updateCache = typeof token !== 'undefined'
     let types = await getDataFromTable('lift_type', updateCache);
     return types;
   });
