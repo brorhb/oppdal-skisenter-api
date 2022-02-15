@@ -204,12 +204,14 @@ const updateBillboards = (items) => {
     var arr = [];
     items.forEach((item) => {
       position = JSON.parse(item['panorama_position']);
-      let status = ledStates[item.status];
-      if (arr[position[0]]) {
-        arr[position[0]][position[1]] = status;
-      } else {
-        arr.push([]);
-        arr[position[0]][position[1]] = status;
+      if (position) {
+        let status = ledStates[item.status];
+        if (arr[position[0]]) {
+          arr[position[0]][position[1]] = status;
+        } else {
+          arr.push([]);
+          arr[position[0]][position[1]] = status;
+        }
       }
     });
     for (var i = 0; i < arr.length; i++) {
