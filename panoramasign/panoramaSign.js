@@ -18,6 +18,15 @@ const temperatureTelegramConstructor = async () => {
   return [STX, CMD, CRC, ETX];
 };
 
+const jsonStringTest = (str) => {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 const sendTelegram = async (telegrams, port) => {
   return new Promise((resolve, reject) => {
     telegrams = telegrams.map((telegram) => new Uint8Array(telegram));
@@ -203,7 +212,7 @@ const updateBillboards = (items) => {
   return new Promise(async (resolve, reject) => {
     var arr = [];
     items.forEach((item) => {
-      position = JSON.parse(item['panorama_position']);
+      position = jsonStringTest(item['panorama_position']) ? JSON.parse(item['panorama_position']) : false;
       if (position) {
         let status = ledStates[item.status];
         if (arr[position[0]]) {
