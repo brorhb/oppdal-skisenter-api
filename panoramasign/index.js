@@ -113,7 +113,7 @@ fastify.route({
 });
 
 fastify.route({
-  method: 'PATCH',
+  method: 'POST',
   url: '/clear-relays',
   preValidation: authMiddleware,
   handler: async (req, res) => {

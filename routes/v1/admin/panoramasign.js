@@ -145,8 +145,8 @@ module.exports = function (fastify, opts, done) {
       try {
         let url = process.env.DO_URL;
         fetch(url + '/clear-relays', {
-          method: 'PATCH',
-          headers: { Authorization: token, 'Content-Type': 'application/json' },
+          method: 'POST',
+          headers: { Authorization: token },
         })
           .then((data) => data.json())
           .then((data) => {
