@@ -3,7 +3,7 @@
  * [STX][CMD][data][CRC][ETX]
  */
 const net = require('net');
-const characterToHex = require('./characterToHex');
+const { characterToHex } = require('./characterToHex');
 
 const PORTS = [10029, 10030, 10031, 10032],
   HOST = '93.89.113.12';
@@ -110,25 +110,25 @@ const billboardMessageConstructor = (message, time) => {
     0x08, // time message is viewed
     0x08, // Char set aka font size 7 is halfsize 8 is fullsize
     0x07, // fixed
-    ...message.split('').map((value) => characterToHex[value]),
+    ...`${message}`.split('').map((value) => characterToHex[value]),
     ...end,
   ];
   messages.push(message);
   // row 2
   const empty1 = [STX, 0x0b, 0x08, 0x07, 0x07, ...end];
-  messages.push(empty1);
+  //messages.push(empty1);
   // row 3
   const empty2 = [STX, 0x0c, 0x07, 0x07, 0x07, ...end];
-  messages.push(empty2);
+  //messages.push(empty2);
   // row 4
   const empty3 = [STX, 0x0d, 0x07, 0x07, 0x07, ...end];
-  messages.push(empty3);
+  //messages.push(empty3);
   // row 5
   const empty4 = [STX, 0x0e, 0x07, 0x07, 0x07, ...end];
-  messages.push(empty4);
+  //messages.push(empty4);
   // row 6
   const empty5 = [STX, 0x0f, 0x07, 0x07, 0x07, ...end];
-  messages.push(empty5);
+  //messages.push(empty5);
   const setScrollSpeed = [STX, 0x20, 0x14, 0x00, 0x00, ...end];
   messages.push(setScrollSpeed);
   const setTime = [
@@ -137,7 +137,7 @@ const billboardMessageConstructor = (message, time) => {
     0x00,
     0x00,
     0x00,
-    ...time.split('').map((char) => characterToHex[char]),
+    ...`${time}`.split('').map((char) => characterToHex[char]),
     ...end,
   ];
   messages.push(setTime);
