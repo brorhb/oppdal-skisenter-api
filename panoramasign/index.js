@@ -118,19 +118,20 @@ fastify.route({
   preValidation: authMiddleware,
   handler: async (req, res) => {
     try {
-      let telegram = await panoramaSign.setAllRelaysTelegramConstructor(false);
-      let result = await panoramaSign.updatePanoramaSign([telegram]);
+      let telegrams = await panoramaSign.clearAllRelaysTelegramConstructor();
+      let results = [];
+      if (process.env.NODE_ENV !== 'development') {
+        let result = await panoramaSign.updatePanoramaSign(telegrams);
+        results.push(result);
+      }
       res
         .code(200)
         .header('Content-Type', 'application/json; charset=utf-8')
         .send({
           success: true,
-          decodedTelegram: new TextDecoder('utf-8')
-            .decode(new Uint8Array(telegram))
-            .trim(),
-          results: result,
+          results: results,
         });
-    } catch (error) {
+    } catch (err) {
       res
         .code(500)
         .header('Content-Type', 'application/json; charset=utf-8')
