@@ -236,13 +236,12 @@ const updateBillboards = (items) => {
   });
 };
 
-const clearAllRelaysTelegramConstructor = async (items) => {
+const clearAllRelaysTelegramConstructor = async () => {
   let fullRow = Array.from({ length: 45 }, () => ledStates['a']);
-  console.log(arrays);
   let telegrams = [
     [STX, 0x31, ...fullRow, CRC, ETX],
     [STX, 0x32, ...fullRow, CRC, ETX],
-    [STX, CMD, 0x30, CRC, ETX], // Clear avalanche
+    [STX, 0x33, 0x30, CRC, ETX], // Clear avalanche
   ];
   return telegrams;
 }
@@ -264,4 +263,5 @@ module.exports = {
   billboardMessageConstructor,
   temperatureTelegramConstructor,
   sendMessageToBillboards,
+  clearAllRelaysTelegramConstructor,
 };
