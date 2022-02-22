@@ -238,6 +238,7 @@ const updateBillboards = (items) => {
 
 const clearAllRelaysTelegramConstructor = async () => {
   let fullRow = Array.from({ length: 45 }, () => ledStates['a']);
+  const end = [0x01, 0x04];
   let telegrams = [
     [STX, 0x31, ...fullRow, CRC, ETX],
     [STX, 0x32, ...fullRow, CRC, ETX],
