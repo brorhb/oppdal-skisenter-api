@@ -91,7 +91,7 @@ fastify.route({
       let telegram = await panoramaSign.avalancheTelegramConstructor(color);
       let result;
       if (process.env.NODE_ENV !== 'development') {
-        result = await panoramaSign.updatePanoramaSign([telegram]);
+        result = await panoramaSign.updatePanoramaSign(telegram);
       }
       res
         .code(200)

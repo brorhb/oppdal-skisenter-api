@@ -178,12 +178,14 @@ const avalancheTelegramConstructor = (color) => {
       data = 0x30; // off
       break;
     default:
-      data = undefined;
+      data = 0x30;
       break;
   }
   if (data === undefined) return false;
   const telegram = [STX, CMD, data, CRC, ETX];
-  return telegram;
+  return [
+    telegram
+  ];
 };
 
 const relaysTelegramConstructor = async (items) => {
