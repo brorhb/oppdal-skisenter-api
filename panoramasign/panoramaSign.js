@@ -178,7 +178,7 @@ const avalancheTelegramConstructor = (color) => {
       data = 0x30; // off
       break;
     default:
-      data = 0x30;
+      data = 0x31;
       break;
   }
   if (data === undefined) return false;

@@ -86,7 +86,7 @@ fastify.route({
   url: '/avalanche',
   preValidation: authMiddleware,
   handler: async (req, res) => {
-    let color = req.body;
+    let { color } = req.body;
     try {
       let telegram = await panoramaSign.avalancheTelegramConstructor(color);
       let result;

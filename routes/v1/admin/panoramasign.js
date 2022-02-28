@@ -99,11 +99,10 @@ module.exports = function (fastify, opts, done) {
          * 1: yellow
          * 2: red
          */
-        let color = req.body;
         let url = process.env.DO_URL;
         fetch(url + '/avalanche', {
           method: 'PATCH',
-          body: JSON.stringify(color),
+          body: req.body,
           headers: { Authorization: token, 'Content-Type': 'application/json' },
         })
           .then((data) => data.json())
