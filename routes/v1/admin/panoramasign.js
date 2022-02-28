@@ -102,7 +102,7 @@ module.exports = function (fastify, opts, done) {
         let url = process.env.DO_URL;
         fetch(url + '/avalanche', {
           method: 'PATCH',
-          body: req.body,
+          body: JSON.stringify(req.body),
           headers: { Authorization: token, 'Content-Type': 'application/json' },
         })
           .then((data) => data.json())
