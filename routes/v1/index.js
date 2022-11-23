@@ -48,6 +48,7 @@ module.exports = function (fastify, opts, done) {
           : null,
       };
     });
+    tracks = tracks.sort((a, b) => a.map_name - b.map_name);
     return tracks;
   });
 
