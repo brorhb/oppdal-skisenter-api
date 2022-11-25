@@ -124,6 +124,7 @@ module.exports = function (fastify, opts, done) {
           : null,
       };
     });
+    lifts = lifts.sort((a, b) => a.map_name > b.map_name ? 1 : -1);
     return lifts;
   });
 
