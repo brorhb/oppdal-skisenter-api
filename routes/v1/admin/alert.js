@@ -26,16 +26,21 @@ module.exports = function(fastify, opts, done) {
         preValidation: authMiddleware,
         url: "/",
         handler: async (req, res) => {
-            const message = req.body;
+            const body = req.body;
             try {
                 const result = await new Promise((resolve, reject) => {
-                    connection.query(`
-                    INSERT INTO alert (message, is_live, timestamp)
-                    VALUES (?, ?, DEFAULT);
-                    `, [message, 1], (error, result) => {
-                        if (error) reject(error);
-                        resolve(result);
-                    });
+                    connection.query(
+                        `INSERT INTO alert (message, is_live, timestamp)
+                        VALUES (?, ?, DEFAULT);`,
+                        [
+                            body.message,
+                            1
+                        ],
+                        (error, result) => {
+                            if (error) reject(error);
+                            resolve(result);
+                        }
+                    );
                 });
 
                 return {
