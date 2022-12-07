@@ -24,10 +24,21 @@ module.exports = function (fastify, opts, done) {
             length = ?,
             difficulty = ?,
             lifts = ?,
-            zone = ?
+            zone = ?,
+            map_name = ?,
           WHERE id = ?
           `,
-            [track.name, JSON.stringify(track.connected_tracks), track.season, track.status, track["length"], track.difficulty, JSON.stringify(track.lifts), track.zone, trackId],
+            [
+              track.name,
+              JSON.stringify(track.connected_tracks),
+              track.season, track.status,
+              track["length"],
+              track.difficulty,
+              JSON.stringify(track.lifts),
+              track.zone,
+              track.map_name,
+              trackId
+            ],
             (error, result) => {
               if (error) reject(error)
               resolve(result)

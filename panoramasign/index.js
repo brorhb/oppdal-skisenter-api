@@ -83,6 +83,45 @@ fastify.route({
 
 fastify.route({
   method: 'PATCH',
+  url: '/message/:id',
+  preValidation: authMiddleware,
+  handler: async (req, res) => {
+    const pathParams = req.url.split("/")
+    const billboardId = pathParams[pathParams.length - 1]
+    //let { message, time } = req.body;
+    const message = req.body["message"];
+    const time = req.body["time"];
+    try {
+      let telegrams = await panoramaSign.billboardMessageConstructor(
+        message,
+        time
+      );
+      let results = {};
+      if (process.env.NODE_ENV !== 'development') {
+        results = await panoramaSign.sendMessageToBillboard(parseInt(billboardId), telegrams);
+      }
+      res
+        .code(200)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: true,
+          results: results,
+        });
+    } catch (err) {
+      console.log('ERROR', err);
+      res
+        .code(500)
+        .header('Content-Type', 'application/json; charset=utf-8')
+        .send({
+          success: false,
+          message: err,
+        });
+    }
+  },
+});
+
+fastify.route({
+  method: 'PATCH',
   url: '/avalanche',
   preValidation: authMiddleware,
   handler: async (req, res) => {

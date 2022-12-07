@@ -33,6 +33,14 @@ module.exports = function (fastify, opts, done) {
   fastify.register(require('./snowConditions'), { prefix: '/snow-conditions' });
   fastify.register(require('./panoramasign'), { prefix: '/panoramasign' });
   fastify.route({
+    method: 'GET',
+    url: '/billboards',
+    preValidation: authMiddleware,
+    handler: async (req, res) => {
+      return await getDataFromTable('billboards', true)
+    }
+  })
+  fastify.route({
     method: 'POST',
     url: '/create',
     preValidation: authMiddleware,

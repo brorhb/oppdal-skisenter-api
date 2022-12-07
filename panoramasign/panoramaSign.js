@@ -65,6 +65,18 @@ const sendTelegram = async (telegrams, port) => {
   });
 };
 
+const sendMessageToBillboard = async (billboardId, telegrams) => {
+  let results = {};
+  try {
+    var messageResult = [];
+    messageResult = await sendTelegram(telegrams, billboardId);
+    results[billboardId] = messageResult;
+  } catch (error) {
+    results[billboardId] = error;
+  }
+  return results
+}
+
 const sendMessageToBillboards = async (telegrams) => {
   let results = {};
   for (let i = 0; i < PORTS.length; i++) {
@@ -276,4 +288,5 @@ module.exports = {
   temperatureTelegramConstructor,
   sendMessageToBillboards,
   clearAllRelaysTelegramConstructor,
+  sendMessageToBillboard
 };

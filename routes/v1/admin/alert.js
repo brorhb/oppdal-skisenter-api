@@ -66,9 +66,16 @@ module.exports = function(fastify, opts, done) {
                     SET
                         message = ?,
                         is_live = ?,
-                        timestamp = DEFAULT
-                    WHERE id = '${id}';
-                    `, [message.message, message.is_live ? 1 : 0], (error, result) => {
+                        timestamp = DEFAULT,
+                        billboard = ?
+                    WHERE id = ?;
+                    `,
+                    [
+                        message.message,
+                        message.is_live ? 1 : 0,
+                        message.billboard,
+                        id,
+                    ], (error, result) => {
                         if (error) reject(error);
                         resolve(result);
                     })
