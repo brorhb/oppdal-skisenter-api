@@ -10,6 +10,14 @@ var rainCache;
 module.exports = function (fastify, opts, done) {
   fastify.register(require('./admin'), { prefix: '/admin' });
 
+  fastify.route({
+    method: 'GET',
+    url: '/billboards',
+    handler: async (req, res) => {
+      return await getDataFromTable('billboards', true)
+    }
+  })
+
   fastify.get('/tracks', async (req) => {
     const token = req.headers.authorization?.split(" ")[1]
     const updateCache = typeof token !== 'undefined'
