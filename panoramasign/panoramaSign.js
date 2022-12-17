@@ -122,7 +122,7 @@ const billboardMessageConstructor = (message, time) => {
     0x08, // time message is viewed
     0x08, // Char set aka font size 7 is halfsize 8 is fullsize
     0x07, // fixed
-    ...`${message}`.split('').map((value) => characterToHex[value]),
+    ...`     ${message}     `.split('').map((value) => characterToHex[value]),
     ...end,
   ];
   messages.push(message);
@@ -141,6 +141,7 @@ const billboardMessageConstructor = (message, time) => {
   // row 6
   const empty5 = [STX, 0x0f, 0x07, 0x07, 0x07, ...end];
   //messages.push(empty5);
+  // hex decimaler som representerer decimaler. 0x14 (tall 3) er fart 20
   const setScrollSpeed = [STX, 0x20, 0x14, 0x00, 0x00, ...end];
   messages.push(setScrollSpeed);
   const setTime = [
@@ -153,7 +154,8 @@ const billboardMessageConstructor = (message, time) => {
     ...end,
   ];
   messages.push(setTime);
-  const setBrightness = [STX, 0x21, 0x15, 0x00, 0x00, ...end];
+  // 0x14 er lysstyrke 20 https://www.hexadecimaldictionary.com/hexadecimal/0x14/
+  const setBrightness = [STX, 0x21, 0x14, 0x00, 0x00, ...end];
   messages.push(setBrightness);
   return messages;
 };
