@@ -56,7 +56,12 @@ module.exports = function (fastify, opts, done) {
           : null,
       };
     });
-    tracks = tracks.sort((a, b) => a.map_name - b.map_name);
+    tracks = tracks.sort((a, b) => {
+      if (a.map_name === b.map_name) {
+        return a.name - b.name
+      }
+      return a.map_name - b.map_name
+    });
     return tracks;
   });
 
@@ -132,7 +137,12 @@ module.exports = function (fastify, opts, done) {
           : null,
       };
     });
-    lifts = lifts.sort((a, b) => a.map_name > b.map_name ? 1 : -1);
+    lifts = lifts.sort((a, b) => {
+      if (a.map_name === b.map_name) {
+        return a.name > b.name ? 1 : -1
+      }
+      return a.map_name > b.map_name ? 1 : -1
+    });
     return lifts;
   });
 
