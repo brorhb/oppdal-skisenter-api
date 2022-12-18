@@ -178,7 +178,7 @@ module.exports = function (fastify, opts, done) {
     return facilities.map((facility) => {
       return {
         ...facility,
-        status: status_types.find((status) => status.id === facility.status),
+        status: status_types.find((status) => status.id === feature.status).name,
         type: facility_types.find((item) => item.id === facility.type),
       };
     });
