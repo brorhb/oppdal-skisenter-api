@@ -11,7 +11,7 @@
     "panoramaserver": "pm2 start panoramasign/index.js --watch --ignore-watch='node_modules'"
   },
   "engines": {
-    "node": "14.13.1"
+    "node": "19.x"
   },
   "author": "",
   "license": "ISC",
