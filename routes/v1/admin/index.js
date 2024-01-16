@@ -1,25 +1,8 @@
 const connection = require("../../../connection")
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const getDataFromTable = require('../../../helpers/getDatabaseTable')
 const authMiddleware = require('../../../helpers/authMiddleware')
-
-const createHash = (password) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(password, 10, function (err, hash) {
-      if (err) reject(err)
-      resolve(hash)
-    });
-  })
-}
-const compareHash = (plainText, hash) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(plainText, hash, function (err, result) {
-      if (err) reject(false)
-      resolve(result)
-    });
-  })
-}
+const { createHash, compareHash } = require('../../../helpers/hasher')
 
 module.exports = function (fastify, opts, done) {
   fastify.register(require('./tracks'), { prefix: '/track' });

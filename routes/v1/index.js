@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const getDataFromTable = require('../../helpers/getDatabaseTable')
 const getAlerts = require('../../helpers/getAlerts');
 const getSnowconditions = require('../../helpers/getSnowconditions')
+const { createHash } = require('../../helpers/hasher')
 var weatherCache;
 var avalancheCache;
 var rainCache;
@@ -182,6 +183,11 @@ module.exports = function (fastify, opts, done) {
         type: facility_types.find((item) => item.id === facility.type),
       };
     });
+  });
+
+  fastify.get('/hasher', async (req) => {
+    let stringTohash = req.query.string;
+    return await createHash(stringTohash);
   });
 
   fastify.get('/weather-report', async (req) => {
