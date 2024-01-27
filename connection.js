@@ -12,7 +12,7 @@ const config = {
 
 var cluster = mysql.createPoolCluster()
 cluster.add(config)
-
+/*
 cluster.on('remove', (nodeId) => {
   console.log(`Node ${nodeId} has been removed from the cluster.`);
 });
@@ -33,5 +33,5 @@ function handleDisconnect() {
 }
 
 handleDisconnect();
-
+*/
 module.exports = connection = cluster.of('*')
